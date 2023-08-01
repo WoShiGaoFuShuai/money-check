@@ -1,9 +1,9 @@
 <template>
   <router-view></router-view>
 
-  <AppNavbar />
+  <AppNavbarBottom />
 </template>
 
 <script setup lang="ts">
-import AppNavbar from "@/components/AppNavbar.vue"
+import AppNavbarBottom from "@/components/Navigation/AppNavbarBottom.vue"
 </script>

@@ -1,9 +1,9 @@
 <template>
   <div class="accounts-wrapper">
     <div
-      class="accounts-item"
       v-for="account in accountStore.accounts"
       :key="account.title"
+      class="accounts-item"
     >
       <div>
         {{ account.title }}
@@ -28,9 +28,11 @@ const accountStore = useAccountsStore()
 }
 
 .accounts-item {
-  min-width: 150px;
-  /* width: 100%; */
+  min-width: 120px;
   flex: 1 1 auto;
   text-align: center;
+  background-color: var(--blue-secondary);
+  border-radius: 8px;
+  margin: 4px;
 }
 </style>
