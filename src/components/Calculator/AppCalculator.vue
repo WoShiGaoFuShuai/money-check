@@ -1,10 +1,23 @@
 <template>
-  <div class="calculator">
-    <div class="display">
-      {{ outputBeforeOperator || "0" }} {{ currentOperator }} {{ outputAfterOperator }}
-
-      <button
+  <div
+    role="calculator"
+    class="calculator"
+  >
+    <div
+      class="display"
+      role="display"
+    >
+      <span role="outputBeforeOperator">{{ outputBeforeOperator || "0" }}</span>
+      <span
         v-show="currentOperator"
+        class="currentOperator"
+        role="currentOperator"
+        >{{ currentOperator }}</span
+      >
+      <span role="outputAfterOperator">{{ outputAfterOperator }}</span>
+      <button
+        v-if="outputAfterOperator !== ''"
+        role="equalButton"
         class="equal"
         @click="equalButtonHandler"
       >
@@ -14,16 +27,19 @@
 
     <ButtonOperator
       :operator="'+'"
+      role="buttonOperatorPlus"
       @send-current-operator-to-parent="changeCurrentOperator"
     />
 
     <ButtonNumber
       :num="1"
+      role="num1"
       @send-to-parent-number="getNumber"
     />
 
     <ButtonNumber
       :num="2"
+      role="num2"
       @send-to-parent-number="getNumber"
     />
 
@@ -34,6 +50,7 @@
 
     <ButtonOperator
       :operator="'-'"
+      role="buttonOperatorMinus"
       @send-current-operator-to-parent="changeCurrentOperator"
     />
     <ButtonNumber
@@ -71,13 +88,20 @@
       @send-current-operator-to-parent="changeCurrentOperator"
     />
 
-    <button @click="getDot">.</button>
+    <button
+      role="dot"
+      @click="getDot"
+    >
+      .
+    </button>
     <ButtonNumber
       :num="0"
+      role="num0"
       @send-to-parent-number="getNumber"
     />
     <button
       class="clear"
+      role="resetButton"
       @click="clearField"
     >
       C
@@ -87,8 +111,8 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import type { Ref } from "vue"
-import ButtonNumber from "@/components/Calculator/ButtonNumber.vue"
-import ButtonOperator from "@/components/Calculator/ButtonOperator.vue"
+import ButtonNumber from "@/components/calculator/ButtonNumber.vue"
+import ButtonOperator from "@/components/calculator/ButtonOperator.vue"
 
 const outputBeforeOperator: Ref<string> = ref("")
 const outputAfterOperator: Ref<string> = ref("")
@@ -102,9 +126,11 @@ const clearField = () => {
 
 const getNumber = (number: number): void => {
   if (currentOperator.value === null) {
-    outputBeforeOperator.value = `${outputBeforeOperator.value}${number}`
+    outputBeforeOperator.value =
+      outputBeforeOperator.value === "0" ? `${number}` : `${outputBeforeOperator.value}${number}`
   } else {
-    outputAfterOperator.value = `${outputAfterOperator.value}${number}`
+    outputAfterOperator.value =
+      outputAfterOperator.value === "0" ? `${number}` : `${outputAfterOperator.value}${number}`
   }
 }
 
@@ -132,13 +158,15 @@ const changeCurrentOperator = (operator: string) => {
 }
 
 const equalButtonHandler = () => {
-  const result = eval(
-    `${outputBeforeOperator.value} ${currentOperator.value} ${outputAfterOperator.value}`
-  )
+  if (outputAfterOperator.value !== "") {
+    const result = eval(
+      `${outputBeforeOperator.value} ${currentOperator.value} ${outputAfterOperator.value}`
+    )
 
-  outputBeforeOperator.value = result.toString()
-  outputAfterOperator.value = ""
-  currentOperator.value = null
+    outputBeforeOperator.value = result.toString()
+    outputAfterOperator.value = ""
+    currentOperator.value = null
+  }
 }
 </script>
 
@@ -171,5 +199,9 @@ const equalButtonHandler = () => {
   position: absolute;
   top: 1px;
   right: 8px;
+}
+
+.currentOperator {
+  padding: 0 12px;
 }
 </style>

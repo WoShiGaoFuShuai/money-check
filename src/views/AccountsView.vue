@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import TopNavbar from "@/components/Navigation/TopNavbar.vue"
+import TopNavbar from "@/components/navigation/TopNavbar.vue"
 </script>
 <style lang="css">
 .nav-top {

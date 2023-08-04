@@ -9,10 +9,11 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url))
-    }
+    },
+    extensions: [".js", ".ts", ".vue"]
   },
   test: {
     globals: true,
-    setupFiles: ["./tests/setup.js"]
+    setupFiles: ["./tests/setup.ts"]
   }
 })
