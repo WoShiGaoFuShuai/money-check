@@ -109,6 +109,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { Calc } from "calc-js"
 import { ref } from "vue"
 import type { Ref } from "vue"
 import ButtonNumber from "@/components/calculator/ButtonNumber.vue"
@@ -159,11 +160,29 @@ const changeCurrentOperator = (operator: string) => {
 
 const equalButtonHandler = () => {
   if (outputAfterOperator.value !== "") {
-    const result = eval(
-      `${outputBeforeOperator.value} ${currentOperator.value} ${outputAfterOperator.value}`
-    )
+    let numericResult: number = 0
 
-    outputBeforeOperator.value = result.toString()
+    const outputBeforeOperatorNum: number = parseFloat(outputBeforeOperator.value)
+    const outputAfterOperatorNum: number = parseFloat(outputAfterOperator.value)
+
+    switch (currentOperator.value) {
+      case "+":
+        numericResult = new Calc(outputBeforeOperatorNum).sum(outputAfterOperatorNum).finish()
+        break
+      case "-":
+        numericResult = new Calc(outputBeforeOperatorNum).minus(outputAfterOperatorNum).finish()
+        break
+      case "/":
+        numericResult = new Calc(outputBeforeOperatorNum).divide(outputAfterOperatorNum).finish()
+        break
+      case "*":
+        numericResult = new Calc(outputBeforeOperatorNum).multiply(outputAfterOperatorNum).finish()
+        break
+      default:
+        console.log("ERROR! Some problem with operator!")
+    }
+
+    outputBeforeOperator.value = numericResult.toString()
     outputAfterOperator.value = ""
     currentOperator.value = null
   }

@@ -31,28 +31,6 @@ describe("AppCalculator", () => {
     })
   })
 
-  describe("when we press on the operator", () => {
-    it("shows correct operator", async () => {
-      render(AppCalculator)
-
-      const buttonOperatorMinus = screen.getByRole("buttonOperatorMinus")
-      await userEvent.click(buttonOperatorMinus)
-
-      const currentOperator = screen.getByRole("currentOperator")
-      expect(currentOperator.textContent).toEqual(currentOperator.textContent)
-    })
-
-    it("doesnt show equal button", async () => {
-      render(AppCalculator)
-
-      const buttonOperatorMinus = screen.getByRole("buttonOperatorMinus")
-
-      await userEvent.click(buttonOperatorMinus)
-      const equalButton = screen.queryByRole("equalButton")
-      expect(equalButton).not.toBeInTheDocument()
-    })
-  })
-
   describe("when we have 2 outputs", () => {
     it("displays equal button", async () => {
       render(AppCalculator)
@@ -222,6 +200,28 @@ describe("AppCalculator", () => {
     })
 
     describe("changeCurrentOperator", () => {
+      describe("when we press on the operator", () => {
+        it("shows correct operator", async () => {
+          render(AppCalculator)
+
+          const buttonOperatorMinus = screen.getByRole("buttonOperatorMinus")
+          await userEvent.click(buttonOperatorMinus)
+
+          const currentOperator = screen.getByRole("currentOperator")
+          expect(currentOperator.textContent).toEqual(currentOperator.textContent)
+        })
+
+        it("doesnt show equal button", async () => {
+          render(AppCalculator)
+
+          const buttonOperatorMinus = screen.getByRole("buttonOperatorMinus")
+
+          await userEvent.click(buttonOperatorMinus)
+          const equalButton = screen.queryByRole("equalButton")
+          expect(equalButton).not.toBeInTheDocument()
+        })
+      })
+
       describe("when user already pressed operator and decided to press another one", () => {
         it("should change previous operator to the new one", async () => {
           render(AppCalculator)
