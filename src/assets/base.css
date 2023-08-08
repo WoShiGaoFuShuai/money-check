@@ -9,6 +9,7 @@
   --green-primary: #80b918;
   --calc-bg-button: #80affb;
   --calc-bg-operator: #235dbb;
+  --active: rgba(255, 213, 0, 0.4);
 }
 
 *,

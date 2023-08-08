@@ -15,4 +15,4 @@ const getCSSVariableValue = (variableName: string) => {
   return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()
 }
 </script>
-<style lang="css"></style>
+<style lang="css" scoped></style>

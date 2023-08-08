@@ -52,7 +52,7 @@
   </div>
 </template>
 <script setup lang="ts"></script>
-<style scoped lang="css">
+<style lang="css" scoped>
 .navbar-bottom__wrapper {
   display: none;
   position: absolute;

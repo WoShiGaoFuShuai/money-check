@@ -8,20 +8,49 @@ import router from "@/router"
 
 import { library } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
-import { faPencil } from "@fortawesome/free-solid-svg-icons"
-import { faPlus } from "@fortawesome/free-solid-svg-icons"
-import { faCreditCard } from "@fortawesome/free-solid-svg-icons"
-import { faRepeat } from "@fortawesome/free-solid-svg-icons"
-import { faMoneyBill1 } from "@fortawesome/free-solid-svg-icons"
-import { faPiggyBank } from "@fortawesome/free-solid-svg-icons"
-import { faWallet } from "@fortawesome/free-solid-svg-icons"
-library.add(faPencil)
-library.add(faPlus)
-library.add(faCreditCard)
-library.add(faRepeat)
-library.add(faMoneyBill1)
-library.add(faPiggyBank)
-library.add(faWallet)
+import {
+  faPlus,
+  faCreditCard,
+  faRepeat,
+  faMoneyBill1,
+  faPiggyBank,
+  faWallet,
+  faPencil,
+  faBasketShopping,
+  faShirt,
+  faDumbbell,
+  faHouse,
+  faPerson,
+  faCar,
+  faMugSaucer,
+  faRoad,
+  faList,
+  faDeleteLeft,
+  faEquals,
+  faXmark
+} from "@fortawesome/free-solid-svg-icons"
+
+library.add(
+  faPencil,
+  faPlus,
+  faCreditCard,
+  faRepeat,
+  faMoneyBill1,
+  faPiggyBank,
+  faWallet,
+  faShirt,
+  faBasketShopping,
+  faDumbbell,
+  faHouse,
+  faPerson,
+  faCar,
+  faMugSaucer,
+  faRoad,
+  faList,
+  faDeleteLeft,
+  faEquals,
+  faXmark
+)
 
 const app = createApp(App)
 

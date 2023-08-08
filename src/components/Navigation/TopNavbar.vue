@@ -44,7 +44,7 @@ const props = defineProps({
   }
 })
 </script>
-<style scoped lang="css">
+<style lang="css" scoped>
 .topbar {
   display: flex;
   justify-content: center;

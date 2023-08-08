@@ -7,22 +7,36 @@
       class="display"
       role="display"
     >
-      <span role="outputBeforeOperator">{{ outputBeforeOperator || "0" }}</span>
+      <span role="outputBeforeOperator">{{ calculatorStore.outputBeforeOperator || "0" }}</span>
       <span
-        v-show="currentOperator"
+        v-show="calculatorStore.currentOperator"
         class="currentOperator"
         role="currentOperator"
-        >{{ currentOperator }}</span
+        >{{ calculatorStore.currentOperator }}</span
       >
-      <span role="outputAfterOperator">{{ outputAfterOperator }}</span>
-      <button
-        v-if="outputAfterOperator !== ''"
-        role="equalButton"
-        class="equal"
-        @click="equalButtonHandler"
-      >
-        =
-      </button>
+      <span role="outputAfterOperator">{{ calculatorStore.outputAfterOperator }}</span>
+      <div>
+        <button
+          v-if="calculatorStore.outputAfterOperator !== ''"
+          role="equalButton"
+          class="equal"
+          @click="equalButtonHandler"
+        >
+          <font-awesome-icon icon="fa-solid fa-equals" />
+        </button>
+
+        <button
+          v-if="
+            calculatorStore.outputBeforeOperator !== '' &&
+            calculatorStore.outputAfterOperator === ''
+          "
+          class="equal"
+          role="resetButton"
+          @click="clearField"
+        >
+          <font-awesome-icon icon="fa-solid fa-xmark" />
+        </button>
+      </div>
     </div>
 
     <ButtonOperator
@@ -99,94 +113,56 @@
       role="num0"
       @send-to-parent-number="getNumber"
     />
-    <button
-      class="clear"
-      role="resetButton"
-      @click="clearField"
-    >
-      C
+
+    <button @click="handleDelete">
+      <font-awesome-icon icon="fa-solid fa-delete-left" />
     </button>
   </div>
 </template>
 <script setup lang="ts">
-import { Calc } from "calc-js"
-import { ref } from "vue"
-import type { Ref } from "vue"
+import { watch } from "vue"
 import ButtonNumber from "@/components/calculator/ButtonNumber.vue"
 import ButtonOperator from "@/components/calculator/ButtonOperator.vue"
+import { useCategoriesStore } from "@/stores/categories"
+import { useCalculatorStore } from "@/stores/calculator"
 
-const outputBeforeOperator: Ref<string> = ref("")
-const outputAfterOperator: Ref<string> = ref("")
-const currentOperator: Ref<string | null> = ref(null)
+const categoriesStore = useCategoriesStore()
+const calculatorStore = useCalculatorStore()
 
 const clearField = () => {
-  outputBeforeOperator.value = ""
-  outputAfterOperator.value = ""
-  currentOperator.value = null
+  calculatorStore.clearField()
+  categoriesStore.changeShowCategoriesExpenses(false)
 }
 
 const getNumber = (number: number): void => {
-  if (currentOperator.value === null) {
-    outputBeforeOperator.value =
-      outputBeforeOperator.value === "0" ? `${number}` : `${outputBeforeOperator.value}${number}`
-  } else {
-    outputAfterOperator.value =
-      outputAfterOperator.value === "0" ? `${number}` : `${outputAfterOperator.value}${number}`
-  }
+  console.log("APPCalc, number received:", number)
+  calculatorStore.getNumber(number)
 }
 
 const getDot = () => {
-  if (currentOperator.value === null) {
-    if (!outputBeforeOperator.value.includes(".") && outputBeforeOperator.value.length > 0) {
-      outputBeforeOperator.value += "."
-    } else if (
-      !outputBeforeOperator.value.includes(".") &&
-      outputBeforeOperator.value.length === 0
-    ) {
-      outputBeforeOperator.value += "0."
-    }
-  } else {
-    if (!outputAfterOperator.value.includes(".") && outputAfterOperator.value.length > 0) {
-      outputAfterOperator.value += "."
-    } else if (!outputAfterOperator.value.includes(".") && outputAfterOperator.value.length === 0) {
-      outputAfterOperator.value += "0."
-    }
-  }
+  calculatorStore.getDot()
 }
 
 const changeCurrentOperator = (operator: string) => {
-  currentOperator.value = operator
+  calculatorStore.changeCurrentOperator(operator)
 }
 
 const equalButtonHandler = () => {
-  if (outputAfterOperator.value !== "") {
-    let numericResult: number = 0
-
-    const outputBeforeOperatorNum: number = parseFloat(outputBeforeOperator.value)
-    const outputAfterOperatorNum: number = parseFloat(outputAfterOperator.value)
-
-    switch (currentOperator.value) {
-      case "+":
-        numericResult = new Calc(outputBeforeOperatorNum).sum(outputAfterOperatorNum).finish()
-        break
-      case "-":
-        numericResult = new Calc(outputBeforeOperatorNum).minus(outputAfterOperatorNum).finish()
-        break
-      case "/":
-        numericResult = new Calc(outputBeforeOperatorNum).divide(outputAfterOperatorNum).finish()
-        break
-      case "*":
-        numericResult = new Calc(outputBeforeOperatorNum).multiply(outputAfterOperatorNum).finish()
-        break
-      default:
-        console.log("ERROR! Some problem with operator!")
-    }
-
-    outputBeforeOperator.value = numericResult.toString()
-    outputAfterOperator.value = ""
-    currentOperator.value = null
-  }
+  calculatorStore.equalButtonHandler()
 }
+
+const handleDelete = () => {
+  calculatorStore.deleteButtonHandler()
+}
+
+watch(
+  () => calculatorStore.outputBeforeOperator,
+  (newVal: string, oldVal: string) => {
+    if (newVal.length && !oldVal.length) {
+      categoriesStore.changeShowCategoriesExpenses(true)
+    }
+  }
+)
 </script>
 
 <style lang="css" scoped>
@@ -214,10 +190,27 @@ const equalButtonHandler = () => {
   text-align: center;
 }
 
+button {
+  grid-column: span 1;
+  padding: 8px;
+  font-size: 18px;
+  background-color: var(--calc-bg-button);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #f0f0f0;
+}
+
 .equal {
   position: absolute;
-  top: 1px;
+  top: 3px;
   right: 8px;
+  font-size: 16px;
+  background-color: transparent;
+  border: none;
 }
 
 .currentOperator {

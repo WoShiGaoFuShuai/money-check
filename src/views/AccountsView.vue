@@ -76,7 +76,7 @@
 <script setup lang="ts">
 import TopNavbar from "@/components/navigation/TopNavbar.vue"
 </script>
-<style lang="css">
+<style lang="css" scoped>
 .nav-top {
   background-color: var(--grey-primary);
   padding: 4px;

@@ -4,6 +4,7 @@
       v-for="account in accountStore.accounts"
       :key="account.title"
       class="accounts-item"
+      :class="{ 'active-account': account.active }"
     >
       <div>
         {{ account.title }}
@@ -20,7 +21,7 @@ import { useAccountsStore } from "@/stores/accounts"
 
 const accountStore = useAccountsStore()
 </script>
-<style lang="css">
+<style lang="css" scoped>
 .accounts-wrapper {
   display: flex;
   justify-content: space-around;
@@ -34,5 +35,9 @@ const accountStore = useAccountsStore()
   background-color: var(--blue-secondary);
   border-radius: 8px;
   margin: 4px;
+}
+
+.active-account {
+  background-color: var(--active);
 }
 </style>

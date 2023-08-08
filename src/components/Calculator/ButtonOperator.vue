@@ -18,7 +18,7 @@ const sendCurrentOperatorToParent = () => {
   emit("sendCurrentOperatorToParent", props.operator)
 }
 </script>
-<style lang="css">
+<style lang="css" scoped>
 button.operator {
   background-color: var(--calc-bg-operator);
 }
