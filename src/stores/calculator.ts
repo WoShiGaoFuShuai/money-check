@@ -17,13 +17,10 @@ export const useCalculatorStore = defineStore("calculator", {
       this.currentOperator = null
     },
     getNumber(number: number) {
-      console.log("getNumber called with number:", number)
       if (this.currentOperator === null) {
-        console.log("Updating outputBeforeOperator:", this.outputBeforeOperator, "to", `${number}`)
         this.outputBeforeOperator =
           this.outputBeforeOperator === "0" ? `${number}` : `${this.outputBeforeOperator}${number}`
       } else {
-        console.log("Updating outputAfterOperator:", this.outputAfterOperator, "to", `${number}`)
         this.outputAfterOperator =
           this.outputAfterOperator === "0" ? `${number}` : `${this.outputAfterOperator}${number}`
       }

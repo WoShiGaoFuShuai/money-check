@@ -5,6 +5,7 @@
       :key="account.title"
       class="accounts-item"
       :class="{ 'active-account': account.active }"
+      data-testid="accounts-item"
     >
       <div>
         {{ account.title }}

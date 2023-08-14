@@ -7,7 +7,7 @@
       class="display"
       role="display"
     >
-      <span role="outputBeforeOperator">{{ calculatorStore.outputBeforeOperator || "0" }}</span>
+      <span role="outputBeforeOperator">{{ calculatorStore.outputBeforeOperator }}</span>
       <span
         v-show="calculatorStore.currentOperator"
         class="currentOperator"
@@ -114,7 +114,10 @@
       @send-to-parent-number="getNumber"
     />
 
-    <button @click="handleDelete">
+    <button
+      role="deleteButton"
+      @click="handleDelete"
+    >
       <font-awesome-icon icon="fa-solid fa-delete-left" />
     </button>
   </div>
@@ -135,7 +138,6 @@ const clearField = () => {
 }
 
 const getNumber = (number: number): void => {
-  console.log("APPCalc, number received:", number)
   calculatorStore.getNumber(number)
 }
 
@@ -188,6 +190,7 @@ watch(
   border: 1px solid #ccc;
   border-radius: 5px;
   text-align: center;
+  min-height: 44px;
 }
 
 button {

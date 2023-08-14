@@ -11,8 +11,6 @@ const props = defineProps<Props>()
 const emit = defineEmits(["sendToParentNumber"])
 
 const sendToParentNumber = (number: number) => {
-  console.log("ButtonNumber", number)
-
   emit("sendToParentNumber", number)
 }
 </script>

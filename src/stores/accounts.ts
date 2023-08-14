@@ -20,9 +20,11 @@ export const useAccountsStore = defineStore("accounts", {
     addSumToActiveAccount() {
       const calculatorStore = useCalculatorStore()
       const outputBeforeOperator: number = parseInt(calculatorStore.outputBeforeOperator)
-
       const activeAccount = this.getterActiveAccount
+      console.log("addSum ")
+
       if (activeAccount) {
+        console.log("addSum in IF")
         activeAccount.sum += outputBeforeOperator
       }
     }

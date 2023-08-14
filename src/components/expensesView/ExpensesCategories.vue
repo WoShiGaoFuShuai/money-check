@@ -7,6 +7,7 @@
       v-for="(category, i) in categoriesStore.categoriesExpenses"
       :key="i"
       class="category__item"
+      data-testid="category__item"
       @click="handleClick(category.categoryName)"
     >
       <div class="category__item-icon">
@@ -29,6 +30,7 @@ const calculatorStore = useCalculatorStore()
 
 const handleClick = (categoryName: string) => {
   if (categoryName !== "All Categories") {
+    console.log("WORKS ")
     accountsStore.addSumToActiveAccount()
     calculatorStore.clearField()
     categoriesStore.changeShowCategoriesExpenses(false)
