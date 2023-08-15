@@ -15,17 +15,38 @@ describe("actions", () => {
   })
 
   describe("actions", () => {
-    it("adds sum to the active account", () => {
-      const calculatorStore = useCalculatorStore()
-      const accountsStore = useAccountsStore()
-      calculatorStore.outputBeforeOperator = "100"
+    describe("addSumToActiveAccount", () => {
+      it("adds sum to the active account", () => {
+        const calculatorStore = useCalculatorStore()
+        const accountsStore = useAccountsStore()
+        calculatorStore.outputBeforeOperator = "100"
 
-      const activeAccountSumBefore = accountsStore.getterActiveAccount?.sum ?? 0
+        const activeAccountSumBefore = accountsStore.getterActiveAccount?.sum ?? 0
 
-      accountsStore.addSumToActiveAccount()
-      const result = activeAccountSumBefore + parseInt(calculatorStore.outputBeforeOperator)
+        accountsStore.addSumToActiveAccount()
+        const result = activeAccountSumBefore + parseInt(calculatorStore.outputBeforeOperator)
 
-      expect(accountsStore.getterActiveAccount?.sum).toEqual(result)
+        expect(accountsStore.getterActiveAccount?.sum).toEqual(result)
+      })
+    })
+
+    describe("changeActiveAccount", () => {
+      it("changes active account when user clicks on account", () => {
+        const accountsStore = useAccountsStore()
+        accountsStore.accounts = [
+          { title: "acc1", sum: 0, active: true },
+          { title: "acc2", sum: 0, active: false }
+        ]
+
+        accountsStore.changeActiveAccount("acc2")
+
+        expect(accountsStore.accounts).toStrictEqual([
+          { title: "acc1", sum: 0, active: false },
+          { title: "acc2", sum: 0, active: true }
+        ])
+
+        console.log("NEW", accountsStore.accounts)
+      })
     })
   })
 })

@@ -6,6 +6,8 @@
       class="accounts-item"
       :class="{ 'active-account': account.active }"
       data-testid="accounts-item"
+      :role="account.title"
+      @click="accountStore.changeActiveAccount(account.title)"
     >
       <div>
         {{ account.title }}

@@ -4,7 +4,7 @@ import { useCalculatorStore } from "@/stores/calculator"
 interface Account {
   title: string
   sum: number
-  active: Boolean
+  active: boolean
 }
 
 export const useAccountsStore = defineStore("accounts", {
@@ -21,11 +21,26 @@ export const useAccountsStore = defineStore("accounts", {
       const calculatorStore = useCalculatorStore()
       const outputBeforeOperator: number = parseInt(calculatorStore.outputBeforeOperator)
       const activeAccount = this.getterActiveAccount
-      console.log("addSum ")
 
       if (activeAccount) {
-        console.log("addSum in IF")
         activeAccount.sum += outputBeforeOperator
+      }
+    },
+    changeActiveAccount(accountTitle: string) {
+      const currentActiveAccount = this.getterActiveAccount as Account | null
+
+      if (currentActiveAccount?.title === accountTitle) {
+        return
+      }
+
+      if (currentActiveAccount) {
+        const indexCurrentActiveAccount = this.accounts.indexOf(currentActiveAccount)
+        this.accounts[indexCurrentActiveAccount].active = false
+      }
+
+      const newActiveAccountIndex = this.accounts.findIndex((acc) => acc.title === accountTitle)
+      if (newActiveAccountIndex !== -1) {
+        this.accounts[newActiveAccountIndex].active = true
       }
     }
   },
