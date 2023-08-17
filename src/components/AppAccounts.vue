@@ -9,12 +9,10 @@
       :role="account.title"
       @click="accountStore.changeActiveAccount(account.title)"
     >
-      <div>
+      <div role="account-title">
         {{ account.title }}
       </div>
-      <div>
-        {{ account.sum }}
-      </div>
+      <div role="account-sum">{{ account.sum }} {{ account.currency }}</div>
     </div>
   </div>
 </template>
@@ -32,7 +30,7 @@ const accountStore = useAccountsStore()
 }
 
 .accounts-item {
-  min-width: 120px;
+  width: 120px;
   flex: 1 1 auto;
   text-align: center;
   background-color: var(--blue-secondary);

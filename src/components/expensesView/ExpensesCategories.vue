@@ -8,7 +8,7 @@
       :key="i"
       class="category__item"
       data-testid="category__item"
-      @click="handleClick(category.categoryName)"
+      @click="handleClick(category)"
     >
       <div class="category__item-icon">
         <font-awesome-icon
@@ -24,14 +24,14 @@
 import { useCategoriesStore } from "@/stores/categories"
 import { useAccountsStore } from "@/stores/accounts"
 import { useCalculatorStore } from "@/stores/calculator"
+import type { CategoryObject } from "@/stores/categories"
 const categoriesStore = useCategoriesStore()
 const accountsStore = useAccountsStore()
 const calculatorStore = useCalculatorStore()
 
-const handleClick = (categoryName: string) => {
-  if (categoryName !== "All Categories") {
-    console.log("WORKS ")
-    accountsStore.addSumToActiveAccount()
+const handleClick = (category: CategoryObject) => {
+  if (category.categoryName !== "All Categories") {
+    accountsStore.subtractSumActiveAccount(category)
     calculatorStore.clearField()
     categoriesStore.changeShowCategoriesExpenses(false)
   }

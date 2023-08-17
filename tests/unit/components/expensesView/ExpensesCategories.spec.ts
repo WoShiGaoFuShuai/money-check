@@ -28,9 +28,9 @@ describe("ExpensesCategories", () => {
   })
 
   describe("when user clicks on the All Categories", () => {
-    it("amount shoudn't be added to the accounts", async () => {
-      const { addSumToActiveAccount } = useAccountsStore()
-      const accountsStoreAddSumToActiveAccountStub = vi.fn(addSumToActiveAccount)
+    it("amount shoudn't be subtracted to the accounts", async () => {
+      const { subtractSumActiveAccount } = useAccountsStore()
+      const accountsStoreSubtractSumActiveAccountStub = vi.fn(subtractSumActiveAccount)
 
       render(ExpensesCategories, {
         global: {
@@ -42,7 +42,7 @@ describe("ExpensesCategories", () => {
 
       const buttonAllCategories = screen.getByText(/all categories/i)
       await userEvent.click(buttonAllCategories)
-      expect(accountsStoreAddSumToActiveAccountStub).not.toHaveBeenCalled() // Check if the stub was not called
+      expect(accountsStoreSubtractSumActiveAccountStub).not.toHaveBeenCalled() // Check if the stub was not called
     })
   })
 

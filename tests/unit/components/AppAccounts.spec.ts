@@ -10,21 +10,34 @@ describe("AppAccounts", () => {
   })
 
   it("renders the correct number of items as in the store", () => {
-    const accountStore = useAccountsStore()
-    accountStore.accounts = Array(5).fill({})
+    const accountsStore = useAccountsStore()
+    accountsStore.accounts = Array(5).fill({})
 
     render(AppAccounts)
 
     const renderedItems = screen.getAllByTestId("accounts-item")
-    expect(renderedItems).toHaveLength(accountStore.accounts.length)
+    expect(renderedItems).toHaveLength(accountsStore.accounts.length)
+  })
+
+  it("renders amount, currency & title in the account", () => {
+    const accountsStore = useAccountsStore()
+    accountsStore.accounts = [{ title: "ab", sum: 9, currency: "Rp", active: true }]
+
+    render(AppAccounts)
+
+    const accountTitle = screen.getByRole("account-title")
+    const accountSum = screen.getByRole("account-sum")
+
+    expect(accountTitle.textContent).toBe("ab")
+    expect(accountSum.textContent).toBe("9 Rp")
   })
 
   describe("when user clicks on the account", () => {
-    it.only("changes active account", async () => {
+    it("changes active account", async () => {
       const accountsStore = useAccountsStore()
       accountsStore.accounts = [
-        { title: "acc1", sum: 0, active: true },
-        { title: "acc2", sum: 0, active: false }
+        { title: "acc1", sum: 0, currency: "Rp", active: true },
+        { title: "acc2", sum: 0, currency: "Rp", active: false }
       ]
 
       render(AppAccounts)

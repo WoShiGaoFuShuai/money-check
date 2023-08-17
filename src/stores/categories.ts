@@ -2,7 +2,7 @@ import { defineStore } from "pinia"
 import { reactive, ref } from "vue"
 import type { Ref } from "vue"
 
-interface CategoryObject {
+export interface CategoryObject {
   iconName: string
   categoryName: string
 }
