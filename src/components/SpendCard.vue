@@ -1,8 +1,29 @@
 <template>
   <div class="spendCard__wrapper">
-    <!-- <div>spend today {{ spendStore.spendToday }}</div> -->
     <div
-      v-if="!spendStore.sortedSpendByTimestamp.length"
+      class="spendCard__totalSpend"
+      role="spend-total"
+    >
+      spent {{ date }}:
+      <span
+        v-if="!Object.keys(currencyTotals).length"
+        role="spend-total-sum-zero"
+        >0</span
+      >
+      <template v-else>
+        <span
+          v-for="(total, currency, index) in currencyTotals"
+          :key="currency"
+          role="spend-total-sum"
+        >
+          {{ total }}{{ currency
+          }}<span v-if="index !== Object.keys(currencyTotals).length - 1">, </span>
+        </span>
+      </template>
+    </div>
+    <div
+      v-if="!props.spendSorted.length"
+      class="spendCard__noOperations"
       role="no-operations"
     >
       No operations
@@ -12,7 +33,7 @@
       role="cards-container"
     >
       <div
-        v-for="(spendItem, i) in spendStore.sortedSpendByTimestamp"
+        v-for="(spendItem, i) in props.spendSorted"
         :key="i"
         class="spendCard__item"
         role="spendItem"
@@ -48,9 +69,19 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useSpendStore } from "@/stores/spend"
+import type { SpendCardInfo } from "@/stores/accounts"
+import { computed } from "vue"
 
-const spendStore = useSpendStore()
+const props = defineProps({
+  spendSorted: {
+    type: Array as () => SpendCardInfo[],
+    required: true
+  },
+  date: {
+    type: String as () => string,
+    required: true
+  }
+})
 
 const getDayLabel = (timestamp: number) => {
   const today = new Date()
@@ -62,6 +93,22 @@ const getDayLabel = (timestamp: number) => {
     return "Yesterday"
   }
 }
+
+const currencyTotals = computed(() => {
+  const totals: Record<string, number> = {}
+
+  for (const spendItem of props.spendSorted) {
+    if (spendItem.currency) {
+      if (totals[spendItem.currency]) {
+        totals[spendItem.currency] += spendItem.sum
+      } else {
+        totals[spendItem.currency] = spendItem.sum
+      }
+    }
+  }
+
+  return totals
+})
 </script>
 <style scoped lang="css">
 .spendCard__wrapper {
@@ -93,5 +140,10 @@ const getDayLabel = (timestamp: number) => {
 
 .spendCard__item-category__icon {
   font-size: 22px;
+}
+
+.spendCard__totalSpend,
+.spendCard__noOperations {
+  text-align: center;
 }
 </style>
