@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/vue"
 import { createPinia, setActivePinia } from "pinia"
 import userEvent from "@testing-library/user-event"
-import AppAccounts from "../../../src/components/AppAccounts.vue"
-import { useAccountsStore } from "../../../src/stores/accounts"
+import AppAccounts from "../../../../src/components/accounts/AppAccounts.vue"
+import { useAccountsStore } from "../../../../src/stores/accounts"
 
 describe("AppAccounts", () => {
   beforeEach(() => {

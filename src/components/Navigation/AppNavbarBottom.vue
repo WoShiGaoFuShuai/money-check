@@ -54,12 +54,13 @@
 <script setup lang="ts"></script>
 <style lang="css" scoped>
 .navbar-bottom__wrapper {
-  display: none;
-  position: absolute;
+  /* display: none; */
+  position: fixed;
   bottom: 0;
   width: 100%;
   padding: 8px 12px;
   background-color: var(--grey-primary);
+  z-index: 100;
 }
 
 .navbar-bottom__ul {

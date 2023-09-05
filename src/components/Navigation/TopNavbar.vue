@@ -9,15 +9,18 @@
       <h3>{{ props.title }}</h3>
     </div>
     <div
-      v-if="props.rightIcons[0] !== ''"
+      v-if="props.rightIcons.length"
       class="topbar-icons__right"
     >
       <div
-        v-for="rightIcon in props.rightIcons"
-        :key="rightIcon"
+        v-for="icon in props.rightIcons"
+        :key="icon.icon"
         class="right-iton__item"
       >
-        <font-awesome-icon :icon="rightIcon" />
+        <font-awesome-icon
+          :icon="icon.icon"
+          @click="icon.handler"
+        />
       </div>
     </div>
   </div>
@@ -26,10 +29,10 @@
 <script setup lang="ts">
 const props = defineProps({
   rightIcons: {
-    type: Array as () => string[],
+    type: Array as () => { icon: string; handler?: () => void }[],
     required: false,
     default() {
-      return [""]
+      return []
     }
   },
   title: {
@@ -46,10 +49,13 @@ const props = defineProps({
 </script>
 <style lang="css" scoped>
 .topbar {
+  position: fixed;
+  width: 100%;
   display: flex;
   justify-content: center;
   padding: 8px;
   margin-bottom: 12px;
+  z-index: 100;
 }
 
 .topbar-icons__right {

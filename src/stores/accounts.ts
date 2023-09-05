@@ -2,12 +2,19 @@ import { defineStore } from "pinia"
 import { useCalculatorStore } from "@/stores/calculator"
 import { useSpendStore } from "@/stores/spend"
 import type { CategoryObject } from "@/stores/categories"
+import { Calc } from "calc-js"
+import { performOperation } from "@/helpers/performOperation"
 
 interface Account {
   title: string
   sum: number
   currency: string
   active: boolean
+}
+
+export interface Currency {
+  currency: string
+  symbol: string
 }
 
 export interface SpendCardInfo {
@@ -22,33 +29,60 @@ export interface SpendCardInfo {
 export const useAccountsStore = defineStore("accounts", {
   state: () => ({
     accounts: [
-      { title: "acc1", sum: 130, currency: "Rp", active: true },
+      { title: "acc1", sum: 3.2, currency: "Rp", active: true },
       { title: "acc2", sum: 10, currency: "$", active: false },
       { title: "acc3", sum: 100, currency: "€", active: false },
       { title: "acc4", sum: 1000, currency: "¥", active: false }
-    ] as Account[]
+    ] as Account[],
+    currencies: [
+      { currency: "United States Dollar", symbol: "$" },
+      { currency: "Euro", symbol: "€" },
+      { currency: "Ukrainian Hryvnia", symbol: "₴" },
+      { currency: "Russian Ruble", symbol: "₽" },
+      { currency: "Japanese Yen", symbol: "¥" },
+      { currency: "British Pound Sterling", symbol: "£" },
+      { currency: "Australian Dollar", symbol: "A$" },
+      { currency: "Chinese Yuan", symbol: "¥" },
+      { currency: "Indonesian Rupiah", symbol: "Rp" },
+      { currency: "Bitcoin", symbol: "₿" },
+      { currency: "Gold", symbol: "XAU" }
+    ] as Currency[]
   }),
   actions: {
     subtractSumActiveAccount(categoryInfo: CategoryObject | null = null) {
       const calculatorStore = useCalculatorStore()
-      const outputBeforeOperator: number = parseInt(calculatorStore.outputBeforeOperator)
-      const activeAccount = this.getterActiveAccount
+      const outputBeforeOperatorNum: number = parseFloat(calculatorStore.outputBeforeOperator)
+      const outputAfterOperatorNum: number = parseFloat(calculatorStore.outputAfterOperator)
+      const currentOperator = calculatorStore.currentOperator
 
-      if (activeAccount) {
-        activeAccount.sum -= outputBeforeOperator
-      }
+      const numericResult = isNaN(outputAfterOperatorNum)
+        ? outputBeforeOperatorNum
+        : performOperation(outputBeforeOperatorNum, outputAfterOperatorNum, currentOperator!)
 
-      if (categoryInfo !== null) {
-        const spendCardInfo: SpendCardInfo = {
-          sum: outputBeforeOperator,
-          ...categoryInfo,
-          timestamp: Date.now(),
-          account: this.getterActiveAccount?.title || null,
-          currency: this.getterActiveAccount?.currency || null
+      // to prevent negative numbers and 0 be added to the accounts
+      if (numericResult > 0) {
+        if (this.getterActiveAccount && !isNaN(numericResult)) {
+          const index = this.accounts.indexOf(this.getterActiveAccount)
+          this.accounts[index].sum = new Calc(this.accounts[index].sum)
+            .minus(numericResult)
+            .finish()
         }
 
-        const spendStore = useSpendStore()
-        spendStore.addToSpend(spendCardInfo)
+        if (categoryInfo !== null) {
+          const spendCardInfo: SpendCardInfo = {
+            sum: numericResult,
+            ...categoryInfo,
+            timestamp: Date.now(),
+            account: this.getterActiveAccount?.title || null,
+            currency: this.getterActiveAccount?.currency || null
+          }
+
+          const spendStore = useSpendStore()
+          spendStore.addToSpend(spendCardInfo)
+        }
+        return true
+      } else {
+        return false
       }
     },
     changeActiveAccount(accountTitle: string) {
@@ -67,6 +101,18 @@ export const useAccountsStore = defineStore("accounts", {
       if (newActiveAccountIndex !== -1) {
         this.accounts[newActiveAccountIndex].active = true
       }
+    },
+    addCurrency(newCurrency: Currency) {
+      this.currencies.push(newCurrency)
+    },
+    deleteCurrency(indexToDelete: number) {
+      this.currencies.splice(indexToDelete, 1)
+    },
+    editCurrency(indexToEdit: number, newCurrency: Currency) {
+      this.currencies.splice(indexToEdit, 1, newCurrency)
+    },
+    addNewAccount(newAccount: Account) {
+      this.accounts.push(newAccount)
     }
   },
   getters: {

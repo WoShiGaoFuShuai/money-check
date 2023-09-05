@@ -4,12 +4,14 @@
 :root {
   --blue-primary: #3a86ff;
   --blue-secondary: rgba(58, 134, 255, 0.4);
+  --blue-secondary-light: rgba(58, 134, 255, 0.2);
   --grey-primary: #f1f0f0;
   --black-primary: #0b090a;
   --green-primary: #80b918;
   --calc-bg-button: #80affb;
   --calc-bg-operator: #235dbb;
   --active: rgba(255, 213, 0, 0.4);
+  --error-text: #ef233c;
 }
 
 *,

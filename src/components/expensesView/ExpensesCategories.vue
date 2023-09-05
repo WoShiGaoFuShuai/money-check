@@ -29,11 +29,21 @@ const categoriesStore = useCategoriesStore()
 const accountsStore = useAccountsStore()
 const calculatorStore = useCalculatorStore()
 
-const handleClick = (category: CategoryObject) => {
+const handleClick = async (category: CategoryObject) => {
   if (category.categoryName !== "All Categories") {
-    accountsStore.subtractSumActiveAccount(category)
-    calculatorStore.clearField()
-    categoriesStore.changeShowCategoriesExpenses(false)
+    const display = document.querySelector(".display")
+    const success = await accountsStore.subtractSumActiveAccount(category)
+
+    console.log("success", success)
+
+    if (success) {
+      calculatorStore.clearField()
+      categoriesStore.changeShowCategoriesExpenses(false)
+      display?.classList.remove("display-error")
+    } else {
+      console.log("?!")
+      display?.classList.add("display-error")
+    }
   }
 }
 </script>

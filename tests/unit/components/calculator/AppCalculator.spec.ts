@@ -60,7 +60,7 @@ describe("AppCalculator", () => {
         await userEvent.click(equalButton)
 
         const display = screen.getByRole("display")
-        const result = parseInt(num1.textContent ?? "0") + parseInt(num2.textContent ?? "0")
+        const result = parseFloat(num1.textContent ?? "0") + parseFloat(num2.textContent ?? "0")
         expect(display.textContent).toBe(result.toString())
       })
     })
@@ -82,11 +82,11 @@ describe("AppCalculator", () => {
         await userEvent.click(equalButton)
 
         const display = screen.getByRole("display")
-        const result = parseInt(num1.textContent ?? "0") - parseInt(num1.textContent ?? "0")
+        const result = parseFloat(num1.textContent ?? "0") - parseFloat(num1.textContent ?? "0")
         expect(display.textContent).toBe(result.toString())
 
         await userEvent.click(num1)
-        expect(display.textContent).toBe(parseInt(num1.textContent ?? "0").toString())
+        expect(display.textContent).toBe(parseFloat(num1.textContent ?? "0").toString())
       })
     })
   })
@@ -105,7 +105,7 @@ describe("AppCalculator", () => {
       await userEvent.click(num1)
 
       const outputAfterOperator = screen.getByRole("outputAfterOperator")
-      expect(outputAfterOperator.textContent).toBe(parseInt(num1.textContent ?? "0").toString())
+      expect(outputAfterOperator.textContent).toBe(parseFloat(num1.textContent ?? "0").toString())
     })
   })
 

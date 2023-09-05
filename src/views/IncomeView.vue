@@ -8,7 +8,7 @@
 </template>
 <script setup lang="ts">
 import TopNavbar from "@/components/navigation/TopNavbar.vue"
-import AppAccounts from "@/components/AppAccounts.vue"
+import AppAccounts from "@/components/accounts/AppAccounts.vue"
 
 const getCSSVariableValue = (variableName: string) => {
   // Read the value of the CSS variable using JavaScript

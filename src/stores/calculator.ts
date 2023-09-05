@@ -1,8 +1,9 @@
 import { defineStore } from "pinia"
 import { ref } from "vue"
 import type { Ref } from "vue"
-import { Calc } from "calc-js"
+// import { Calc } from "calc-js"
 import { useCategoriesStore } from "@/stores/categories"
+import { performOperation } from "@/helpers/performOperation"
 
 export const useCalculatorStore = defineStore("calculator", {
   state: () => ({
@@ -53,37 +54,20 @@ export const useCalculatorStore = defineStore("calculator", {
     },
     equalButtonHandler() {
       if (this.outputAfterOperator !== "") {
-        let numericResult: number = 0
-
         const outputBeforeOperatorNum: number = parseFloat(this.outputBeforeOperator)
         const outputAfterOperatorNum: number = parseFloat(this.outputAfterOperator)
-
-        switch (this.currentOperator) {
-          case "+":
-            numericResult = new Calc(outputBeforeOperatorNum).sum(outputAfterOperatorNum).finish()
-            break
-          case "-":
-            numericResult = new Calc(outputBeforeOperatorNum).minus(outputAfterOperatorNum).finish()
-            break
-          case "/":
-            numericResult = new Calc(outputBeforeOperatorNum)
-              .divide(outputAfterOperatorNum)
-              .finish()
-            break
-          case "*":
-            numericResult = new Calc(outputBeforeOperatorNum)
-              .multiply(outputAfterOperatorNum)
-              .finish()
-            break
-          default:
-            console.log("ERROR! Some problem with operator!")
-        }
+        const numericResult = performOperation(
+          outputBeforeOperatorNum,
+          outputAfterOperatorNum,
+          this.currentOperator!
+        )
 
         this.outputBeforeOperator = numericResult.toString()
         this.outputAfterOperator = ""
         this.currentOperator = null
       }
     },
+
     deleteButtonHandler() {
       if (this.currentOperator !== null) {
         if (this.outputAfterOperator.length) {

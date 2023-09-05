@@ -27,6 +27,7 @@ const accountStore = useAccountsStore()
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
+  padding-top: 48px;
 }
 
 .accounts-item {

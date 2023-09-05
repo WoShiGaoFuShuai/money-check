@@ -32,7 +32,8 @@
       v-else
       role="cards-container"
     >
-      <div
+      <SpendCardContainer :spend-sorted="props.spendSorted" />
+      <!-- <div
         v-for="(spendItem, i) in props.spendSorted"
         :key="i"
         class="spendCard__item"
@@ -64,13 +65,15 @@
             </p>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import type { SpendCardInfo } from "@/stores/accounts"
 import { computed } from "vue"
+import SpendCardContainer from "@/components/spendCard/SpendCardContainer.vue"
+import { Calc } from "calc-js"
 
 const props = defineProps({
   spendSorted: {
@@ -83,16 +86,16 @@ const props = defineProps({
   }
 })
 
-const getDayLabel = (timestamp: number) => {
-  const today = new Date()
-  const dateTimestamp = new Date(timestamp)
+// const getDayLabel = (timestamp: number) => {
+//   const today = new Date()
+//   const dateTimestamp = new Date(timestamp)
 
-  if (today.toDateString() === dateTimestamp.toDateString()) {
-    return "Today"
-  } else {
-    return "Yesterday"
-  }
-}
+//   if (today.toDateString() === dateTimestamp.toDateString()) {
+//     return "Today"
+//   } else {
+//     return "Yesterday"
+//   }
+// }
 
 const currencyTotals = computed(() => {
   const totals: Record<string, number> = {}
@@ -100,7 +103,9 @@ const currencyTotals = computed(() => {
   for (const spendItem of props.spendSorted) {
     if (spendItem.currency) {
       if (totals[spendItem.currency]) {
-        totals[spendItem.currency] += spendItem.sum
+        totals[spendItem.currency] = new Calc(totals[spendItem.currency])
+          .sum(spendItem.sum)
+          .finish()
       } else {
         totals[spendItem.currency] = spendItem.sum
       }
@@ -113,33 +118,6 @@ const currencyTotals = computed(() => {
 <style scoped lang="css">
 .spendCard__wrapper {
   padding: 8px;
-}
-
-.spendCard__item {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid black;
-}
-
-.spendCard__item:last-child {
-  border-bottom: none;
-}
-
-.spendCard__left {
-  display: flex;
-  align-items: center;
-}
-
-.spendCard__item-category {
-  text-align: center;
-  margin-right: 8px;
-  width: 30px;
-}
-
-.spendCard__item-category__icon {
-  font-size: 22px;
 }
 
 .spendCard__totalSpend,

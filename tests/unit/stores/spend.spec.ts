@@ -22,6 +22,7 @@ describe("spend store", () => {
     describe("addToSpend", () => {
       it("adds item to the state spend", () => {
         const spendStore = useSpendStore()
+        spendStore.spend = []
 
         const spendState = spendStore.spend
         expect(spendState).toEqual([])
@@ -42,6 +43,7 @@ describe("spend store", () => {
           const yesterdaySpendCard = createSpendCard({ timestamp: Date.now() - oneDay })
 
           const spendStore = useSpendStore()
+          spendStore.spend = []
           spendStore.addToSpend(todaySpendCard)
           spendStore.addToSpend(yesterdaySpendCard)
 
@@ -59,6 +61,8 @@ describe("spend store", () => {
           const todaySpendCard3 = createSpendCard({ timestamp: Date.now() - threeHours })
 
           const spendStore = useSpendStore()
+          spendStore.spend = []
+
           spendStore.addToSpend(todaySpendCard3)
           spendStore.addToSpend(todaySpendCard1)
           spendStore.addToSpend(todaySpendCard2)
@@ -98,6 +102,50 @@ describe("spend store", () => {
 
           const result = spendStore.spendYesterdaySorted
           expect(result).toEqual([yesterdaySpendCard1, yesterdaySpendCard2, yesterdaySpendCard3])
+        })
+      })
+
+      describe("allMonth", () => {
+        it("should return all months from spend store without dublication", () => {
+          const spendStore = useSpendStore()
+          spendStore.spend = []
+
+          const juneTimestamp = new Date(2023, 5, 15).getTime()
+          const julyTimestamp = new Date(2023, 6, 15).getTime()
+          const augustTimestamp = new Date(2023, 7, 15).getTime()
+
+          const spendJune1 = createSpendCard({ timestamp: juneTimestamp })
+          const spendJune2 = createSpendCard({ timestamp: juneTimestamp })
+          const spendJuly = createSpendCard({ timestamp: julyTimestamp })
+          const spendAugust = createSpendCard({ timestamp: augustTimestamp })
+
+          spendStore.addToSpend(spendJune1)
+          spendStore.addToSpend(spendJune2)
+          spendStore.addToSpend(spendJuly)
+          spendStore.addToSpend(spendAugust)
+
+          expect(spendStore.allMonths).toStrictEqual(["June 2023", "July 2023", "August 2023"])
+        })
+      })
+
+      describe("sortedSpends", () => {
+        it("should sort spends in descending order", () => {
+          const spendStore = useSpendStore()
+          spendStore.spend = []
+
+          const juneTimestamp = new Date(2023, 5, 15).getTime()
+          const julyTimestamp = new Date(2023, 6, 15).getTime()
+          const augustTimestamp = new Date(2023, 7, 15).getTime()
+
+          const spendJune = createSpendCard({ timestamp: juneTimestamp })
+          const spendJuly = createSpendCard({ timestamp: julyTimestamp })
+          const spendAugust = createSpendCard({ timestamp: augustTimestamp })
+
+          spendStore.addToSpend(spendJune)
+          spendStore.addToSpend(spendAugust)
+          spendStore.addToSpend(spendJuly)
+
+          expect(spendStore.sortedSpends).toStrictEqual([spendAugust, spendJuly, spendJune])
         })
       })
     })

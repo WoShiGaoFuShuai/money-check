@@ -135,6 +135,9 @@ const calculatorStore = useCalculatorStore()
 const clearField = () => {
   calculatorStore.clearField()
   categoriesStore.changeShowCategoriesExpenses(false)
+
+  const display = document.querySelector(".display")
+  display?.classList.remove("display-error")
 }
 
 const getNumber = (number: number): void => {
@@ -218,5 +221,9 @@ button:hover {
 
 .currentOperator {
   padding: 0 12px;
+}
+
+.display-error {
+  color: var(--error-text);
 }
 </style>

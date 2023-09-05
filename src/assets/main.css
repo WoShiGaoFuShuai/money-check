@@ -1,1 +1,7 @@
 @import "./base.css";
+
+.error {
+  display: none;
+  text-align: center;
+  color: var(--error-text);
+}

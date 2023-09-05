@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/vue"
-import SpendCard from "../../../src/components/SpendCard.vue"
-import { useSpendStore } from "../../../src/stores/spend"
+import SpendCard from "../../../../src/components/spendCard/SpendCard.vue"
+import { useSpendStore } from "../../../../src/stores/spend"
 
 describe("SpendCard", () => {
   const renderSpendCard = (props = {}) => {
@@ -122,6 +122,7 @@ describe("SpendCard", () => {
 
   it("displays 'no operations' text if we dont have any spends", () => {
     const spendStore = useSpendStore()
+    spendStore.spend = []
 
     expect(spendStore.spend.length).toEqual(0)
     renderSpendCard()
@@ -132,6 +133,7 @@ describe("SpendCard", () => {
 
   it("does not display cards container if we dont have any spends", () => {
     const spendStore = useSpendStore()
+    spendStore.spend = []
 
     expect(spendStore.spend.length).toEqual(0)
     renderSpendCard()
@@ -152,37 +154,5 @@ describe("SpendCard", () => {
 
     const spendItems = screen.getAllByRole("spendItem")
     expect(spendItems.length).toBe(2)
-  })
-
-  describe("getDayLabel", () => {
-    describe("when timestamp less than 24 hours", () => {
-      it("shows 'today'", () => {
-        const spendCard1 = createSpendCard()
-
-        const props = {
-          spendSorted: [spendCard1]
-        }
-        renderSpendCard(props)
-        const getDayLabel = screen.getByRole("getDayLabel")
-        expect(getDayLabel.textContent).toBe("Today")
-      })
-    })
-
-    describe("when timestamp more than 24 hours", () => {
-      it("shows 'yesterday'", () => {
-        const twentyFiveHoursInMilliseconds = 25 * 60 * 60 * 1000
-        const spendCard1 = createSpendCard({
-          timestamp: Date.now() - twentyFiveHoursInMilliseconds
-        })
-
-        const props = {
-          spendSorted: [spendCard1]
-        }
-
-        renderSpendCard(props)
-        const getDayLabel = screen.getByRole("getDayLabel")
-        expect(getDayLabel.textContent).toBe("Yesterday")
-      })
-    })
   })
 })
