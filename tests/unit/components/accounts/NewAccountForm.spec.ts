@@ -1,37 +1,43 @@
 import { render, screen } from "@testing-library/vue"
-import { vi } from "vitest"
+import NewAccountForm from "../../../../src/components/accounts/NewAccountForm.vue"
 import userEvent from "@testing-library/user-event"
-import { createPinia, setActivePinia } from "pinia"
-import { RouterLinkStub } from "@vue/test-utils"
-import NewAccount from "../../../../src/components/accounts/NewAccount.vue"
-import { useAccountsStore } from "../../../../src/stores/accounts"
 
-describe("NewAccount", () => {
-  beforeEach(() => {
-    setActivePinia(createPinia())
-  })
+const NewAccountsCurrencySelect = {
+  props: {
+    allCurrency: {
+      type: Array,
+      default: () => []
+    },
+    currentSymbol: String
+  },
+  template: "<div></div>"
+}
 
-  const renderNewAccount = () => {
-    render(NewAccount, {
+describe("NewAccountForm", () => {
+  const renderNewAccountForm = () => {
+    return render(NewAccountForm, {
+      props: {
+        currencies: [{ currency: "Dollar", symbol: "$" }]
+      },
       global: {
         stubs: {
           FontAwesomeIcon: true,
-          RouterLink: RouterLinkStub
+          NewAccountsCurrencySelect
         }
       }
     })
   }
 
-  describe("when we first open the window newAccount", () => {
+  describe("when user first opens the window NewAccountForm", () => {
     it("balance is 0", () => {
-      renderNewAccount()
+      renderNewAccountForm()
 
       const accountBalanceInput = screen.getByRole("accountBalanceInput") as HTMLInputElement
 
       expect(accountBalanceInput.value).toBe("0")
     }),
       it("name is empty", () => {
-        renderNewAccount()
+        renderNewAccountForm()
 
         const accountNameInput = screen.getByRole("accountNameInput") as HTMLInputElement
 
@@ -41,7 +47,7 @@ describe("NewAccount", () => {
 
   describe("when we click on +- button", () => {
     it("should change balance value to opposite", async () => {
-      renderNewAccount()
+      renderNewAccountForm()
       const accountBalanceInput = screen.getByRole("accountBalanceInput") as HTMLInputElement
 
       await userEvent.type(accountBalanceInput, "2")
@@ -56,7 +62,7 @@ describe("NewAccount", () => {
 
     describe("when balance is 0", () => {
       it("should keep 0 in balance input", async () => {
-        renderNewAccount()
+        renderNewAccountForm()
 
         let accountBalanceInput = screen.getByRole("accountBalanceInput") as HTMLInputElement
         expect(accountBalanceInput.value).toBe("0")
@@ -71,10 +77,8 @@ describe("NewAccount", () => {
   })
 
   describe("addNewAccount", () => {
-    it("creates a new account if inputs are valid", async () => {
-      const addNewAccountSpy = vi.spyOn(useAccountsStore(), "addNewAccount")
-
-      renderNewAccount()
+    it("emits accountsStoreAddNewAcc if inputs are valid", async () => {
+      const { emitted } = renderNewAccountForm()
 
       const accountBalanceInput = screen.getByRole("accountBalanceInput") as HTMLInputElement
       const accountNameInput = screen.getByRole("accountNameInput") as HTMLInputElement
@@ -84,13 +88,18 @@ describe("NewAccount", () => {
       await userEvent.type(accountBalanceInput, "100")
       await userEvent.click(addNewAccountBtn)
 
-      expect(addNewAccountSpy).toHaveBeenCalled()
+      expect(emitted()).toHaveProperty("accountsStoreAddNewAcc")
+      const newAccount = {
+        title: "New Account",
+        sum: 100,
+        currency: "",
+        active: false
+      }
+      expect(emitted().accountsStoreAddNewAcc[0]).toEqual([newAccount])
     })
 
-    it("does not create a new account if the accountNameInput input is empty", async () => {
-      const addNewAccountSpy = vi.spyOn(useAccountsStore(), "addNewAccount")
-
-      renderNewAccount()
+    it("does not emit accountsStoreAddNewAcc if the accountNameInput input is empty", async () => {
+      const { emitted } = renderNewAccountForm()
 
       const accountBalanceInput = screen.getByRole("accountBalanceInput") as HTMLInputElement
       const addNewAccountBtn = screen.getByRole("addNewAccountBtn")
@@ -98,7 +107,7 @@ describe("NewAccount", () => {
       await userEvent.type(accountBalanceInput, "100")
       await userEvent.click(addNewAccountBtn)
 
-      expect(addNewAccountSpy).not.toBeCalled()
+      expect(emitted()).not.toHaveProperty("accountsStoreAddNewAcc")
     })
   })
 })

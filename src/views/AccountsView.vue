@@ -22,28 +22,20 @@
       </nav>
     </div>
 
-    <div class="accounts-list">
-      <ul>
-        <li
-          v-for="account in accountsStore.accounts"
-          :key="account.title"
-          class="accouts-list__li"
-        >
-          <div class="accounts-list__account-name">
-            <span class="account-name__name">{{ account.title }}</span>
-          </div>
-
-          <div class="accounts-list__account-amount">
-            <span class="account-amount__amount"
-              >{{ account.sum }} <span>{{ account.currency }}</span></span
-            >
-          </div>
-        </li>
-      </ul>
-    </div>
+    <AccountsList
+      :edit-mode="editMode"
+      :accounts="accountsStore.accounts"
+      @show-edit-current-account="showEditCurrentAccount"
+    />
     <NewAccount
       v-if="isNewAccountVisible"
       @hide-new-account-modal="isNewAccountVisible = false"
+    />
+
+    <EditCurrentAccount
+      v-if="isShowEditCurrentAccount"
+      :account-to-edit="accountToEdit"
+      @hideEditCurrentAccount="isShowEditCurrentAccount = false"
     />
   </div>
 </template>
@@ -51,19 +43,44 @@
 <script setup lang="ts">
 import TopNavbar from "@/components/navigation/TopNavbar.vue"
 import NewAccount from "@/components/accounts/NewAccount.vue"
+import AccountsList from "@/components/accounts/AccountsList.vue"
+import EditCurrentAccount from "@/components/accounts/EditCurrentAccount.vue"
 import { useAccountsStore } from "@/stores/accounts"
-import { ref } from "vue"
+import { ref, reactive } from "vue"
+
+export interface AccountToEdit {
+  sum: number
+  title: string
+  symbol: string
+  index: number
+}
 
 const accountsStore = useAccountsStore()
 
 const isNewAccountVisible = ref(false)
 
 const showNewAccount = () => {
-  isNewAccountVisible.value = !isNewAccountVisible.value
+  isNewAccountVisible.value = true
 }
 
 const showEditIcon = () => {
-  console.log("edit")
+  editMode.value = !editMode.value
+}
+
+//edit mode
+const editMode = ref(false)
+
+const isShowEditCurrentAccount = ref(false)
+const accountToEdit = reactive({
+  sum: 0,
+  symbol: "",
+  title: "",
+  index: 0
+})
+
+const showEditCurrentAccount = (account: AccountToEdit) => {
+  Object.assign(accountToEdit, account)
+  isShowEditCurrentAccount.value = true
 }
 </script>
 <style lang="css" scoped>
@@ -78,19 +95,5 @@ const showEditIcon = () => {
 .nav-top__ul {
   display: flex;
   justify-content: space-around;
-}
-
-.accounts-list {
-  padding: 8px;
-}
-
-.accouts-list__li {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.account-amount__amount {
-  color: var(--green-primary);
 }
 </style>

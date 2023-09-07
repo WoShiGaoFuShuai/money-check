@@ -4,6 +4,7 @@
       <select
         v-model="selectedItem"
         class="history-select"
+        role="history-select"
       >
         <option value="">All Months</option>
         <option

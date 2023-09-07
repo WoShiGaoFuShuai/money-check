@@ -105,5 +105,65 @@ describe("actions", () => {
         expect(accountsStore.currencies).toStrictEqual([newCurrency])
       })
     })
+
+    describe("editAccount", () => {
+      it("receives editedAccount and replaces new info from it with old account info", () => {
+        const accountsStore = useAccountsStore()
+        accountsStore.accounts = [
+          { title: "acc1", sum: 3.2, currency: "Rp", active: true },
+          { title: "acc2", sum: 10, currency: "$", active: false }
+        ]
+
+        const account = { title: "new", sum: 1, currency: "Y" }
+        const index = 1
+
+        accountsStore.editAccount(account, index)
+
+        expect(accountsStore.accounts[index]).toEqual({
+          title: "new",
+          sum: 1,
+          currency: "Y",
+          active: false
+        })
+      })
+    })
+
+    describe("deleteAccount", () => {
+      it("deletes account with correct index", () => {
+        const accountsStore = useAccountsStore()
+        accountsStore.accounts = [
+          { title: "acc1", sum: 3.2, currency: "Rp", active: true },
+          { title: "acc2", sum: 10, currency: "$", active: false }
+        ]
+
+        accountsStore.deleteAccount(1)
+
+        expect(accountsStore.accounts).toEqual([
+          { title: "acc1", sum: 3.2, currency: "Rp", active: true }
+        ])
+      })
+    })
+
+    describe("addNewAccount", () => {
+      it("adds new account ", () => {
+        const accountsStore = useAccountsStore()
+        accountsStore.accounts = [
+          { title: "acc1", sum: 3.2, currency: "Rp", active: true },
+          { title: "acc2", sum: 10, currency: "$", active: false }
+        ]
+
+        const newAccount = {
+          title: "new",
+          sum: 9,
+          currency: "Q",
+          active: false
+        }
+
+        accountsStore.addNewAccount(newAccount)
+
+        expect(accountsStore.accounts).toHaveLength(3)
+        expect(accountsStore.accounts[accountsStore.accounts.length - 1]).toEqual(newAccount)
+      })
+    })
   })
 })

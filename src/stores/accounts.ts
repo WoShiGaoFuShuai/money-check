@@ -5,7 +5,7 @@ import type { CategoryObject } from "@/stores/categories"
 import { Calc } from "calc-js"
 import { performOperation } from "@/helpers/performOperation"
 
-interface Account {
+export interface Account {
   title: string
   sum: number
   currency: string
@@ -113,6 +113,21 @@ export const useAccountsStore = defineStore("accounts", {
     },
     addNewAccount(newAccount: Account) {
       this.accounts.push(newAccount)
+    },
+    editAccount(account: { title: string; sum: number; currency: string }, index: number) {
+      const active = this.accounts[index].active
+
+      const editedAccount = {
+        title: account.title,
+        sum: account.sum,
+        currency: account.currency,
+        active
+      }
+
+      this.accounts.splice(index, 1, editedAccount)
+    },
+    deleteAccount(index: number) {
+      this.accounts.splice(index, 1)
     }
   },
   getters: {

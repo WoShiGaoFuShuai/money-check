@@ -13,10 +13,11 @@
           >
           <input
             id="currency"
-            v-model.lazy="currencyInput"
+            v-model="currencyInput"
             type="text"
             class="form__input"
             placeholder="name for currency"
+            role="currencyInput"
           />
         </div>
 
@@ -28,10 +29,11 @@
           </label>
           <input
             id="symbol"
-            v-model.lazy="currencySymbolInput"
+            v-model="currencySymbolInput"
             type="text"
             class="form__input"
             placeholder="symbol for currency"
+            role="currencySymbolInput"
           />
         </div>
 
@@ -41,12 +43,14 @@
         <button
           class="button__primary button__padding buttom__primary--margin"
           @click="saveEditCurrency"
+          role="saveEditCurrencyBtn"
         >
           <font-awesome-icon icon="fa-solid fa-check" />
         </button>
         <button
           class="button__primary button__padding"
           @click="close"
+          role="closeBtn"
         >
           <font-awesome-icon icon="fa-solid fa-xmark" />
         </button>

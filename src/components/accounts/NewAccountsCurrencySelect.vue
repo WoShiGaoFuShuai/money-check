@@ -26,6 +26,13 @@ const props = defineProps({
   allCurrency: {
     type: Array as () => Currency[],
     required: true
+  },
+  currentSymbol: {
+    type: String,
+    required: false,
+    default() {
+      return ""
+    }
   }
 })
 
@@ -39,7 +46,15 @@ const handleEmitSelecteItem = () => {
 }
 
 onMounted(() => {
-  selectedItem.value = props.allCurrency[0].currency
+  if (props.currentSymbol === "") {
+    selectedItem.value = props.allCurrency[0].currency
+  } else {
+    const currentItem = props.allCurrency.find(
+      (item) => item.symbol === props.currentSymbol
+    ) as Currency
+    const currentIndex = props.allCurrency.indexOf(currentItem)
+    selectedItem.value = props.allCurrency[currentIndex].currency
+  }
   emit("emitSelectedItem", selectedSymbol.value)
 })
 

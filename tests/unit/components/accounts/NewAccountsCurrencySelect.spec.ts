@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/vue"
-import { vi } from "vitest"
 import userEvent from "@testing-library/user-event"
 import NewAccountsCurrencySelect from "../../../../src/components/accounts/NewAccountsCurrencySelect.vue"
 
