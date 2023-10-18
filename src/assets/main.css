@@ -5,3 +5,11 @@
   text-align: center;
   color: var(--error-text);
 }
+
+.btn__primary-form {
+  background-color: var(--blue-primary);
+  outline: none;
+  border: 0;
+  padding: 4px 6px;
+  border-radius: 4px;
+}

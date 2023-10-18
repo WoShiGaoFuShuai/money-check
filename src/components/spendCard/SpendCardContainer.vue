@@ -33,6 +33,7 @@
 </template>
 <script setup lang="ts">
 import type { SpendCardInfo } from "@/stores/accounts"
+import { getDayLabel } from "@/helpers/getDayLabel"
 
 const props = defineProps({
   spendSorted: {
@@ -40,25 +41,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const getDayLabel = (timestamp: number) => {
-  const today = new Date()
-  const dateTimestamp = new Date(timestamp)
-
-  if (today.toDateString() === dateTimestamp.toDateString()) {
-    return "Today"
-  } else {
-    const yesterday = new Date(today)
-    yesterday.setDate(today.getDate() - 1)
-    if (yesterday.toDateString() === dateTimestamp.toDateString()) {
-      return "Yesterday"
-    } else {
-      const day = dateTimestamp.getDate()
-      const month = dateTimestamp.toLocaleString("en-US", { month: "long" })
-      return `${day} ${month}`
-    }
-  }
-}
 </script>
 <style lang="css" scoped>
 .spendCard__item {

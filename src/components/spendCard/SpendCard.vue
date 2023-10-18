@@ -33,39 +33,6 @@
       role="cards-container"
     >
       <SpendCardContainer :spend-sorted="props.spendSorted" />
-      <!-- <div
-        v-for="(spendItem, i) in props.spendSorted"
-        :key="i"
-        class="spendCard__item"
-        role="spendItem"
-      >
-        <div class="spendCard__left">
-          <div class="spendCard__item-category">
-            <font-awesome-icon
-              class="spendCard__item-category__icon"
-              :icon="spendItem.iconName"
-            />
-          </div>
-          <div class="spendCard__item-info">
-            <p class="spendCard__item-info__name">{{ spendItem.categoryName }}</p>
-            <p class="spendCard__item-info__currency">{{ spendItem.account }}</p>
-          </div>
-        </div>
-
-        <div class="spendCard__right">
-          <div class="spendCard__item-money">
-            <p class="spendCard__item-money__amount">
-              {{ spendItem.sum }} {{ spendItem.currency }}
-            </p>
-            <p
-              role="getDayLabel"
-              class="spendCard__item-money__time"
-            >
-              {{ getDayLabel(spendItem.timestamp) }}
-            </p>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -85,17 +52,6 @@ const props = defineProps({
     required: true
   }
 })
-
-// const getDayLabel = (timestamp: number) => {
-//   const today = new Date()
-//   const dateTimestamp = new Date(timestamp)
-
-//   if (today.toDateString() === dateTimestamp.toDateString()) {
-//     return "Today"
-//   } else {
-//     return "Yesterday"
-//   }
-// }
 
 const currencyTotals = computed(() => {
   const totals: Record<string, number> = {}

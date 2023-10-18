@@ -128,6 +128,28 @@ export const useAccountsStore = defineStore("accounts", {
     },
     deleteAccount(index: number) {
       this.accounts.splice(index, 1)
+    },
+    transfer(indexDebit: number, indexCredit: number, amount: number) {
+      this.accounts[indexDebit].sum = performOperation(this.accounts[indexDebit].sum, amount, "-")
+      this.accounts[indexCredit].sum = performOperation(this.accounts[indexCredit].sum, amount, "+")
+    },
+    transferWithDifferentCurrency(
+      indexDebit: number,
+      indexCredit: number,
+      debitAmount: number,
+      creditAmount: number
+    ) {
+      this.accounts[indexDebit].sum = performOperation(
+        this.accounts[indexDebit].sum,
+        debitAmount,
+        "-"
+      )
+
+      this.accounts[indexCredit].sum = performOperation(
+        this.accounts[indexCredit].sum,
+        creditAmount,
+        "+"
+      )
     }
   },
   getters: {

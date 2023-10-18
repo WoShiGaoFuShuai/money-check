@@ -165,5 +165,48 @@ describe("actions", () => {
         expect(accountsStore.accounts[accountsStore.accounts.length - 1]).toEqual(newAccount)
       })
     })
+
+    describe("transfer", () => {
+      it("should subtract from debit acc and should add to credit acc correct amount", () => {
+        const accountsStore = useAccountsStore()
+        accountsStore.accounts = [
+          { title: "credit", sum: 10, currency: "$", active: true },
+          { title: "debit", sum: 12, currency: "$", active: false }
+        ]
+
+        const debitAccIndex = 0
+        const creditAccIndex = 1
+        const amount = 5
+        accountsStore.transfer(debitAccIndex, creditAccIndex, amount)
+
+        expect(accountsStore.accounts[debitAccIndex].sum).toEqual(5)
+        expect(accountsStore.accounts[creditAccIndex].sum).toEqual(17)
+      })
+    })
+
+    describe("transferWithDifferentCurrency", () => {
+      it("receives different amounts for credit and debit accs and subtracts and adds amount to the accounts", () => {
+        const accountsStore = useAccountsStore()
+        accountsStore.accounts = [
+          { title: "credit", sum: 10, currency: "$", active: true },
+          { title: "debit", sum: 12, currency: "Rp", active: false }
+        ]
+
+        const debitAccIndex = 0
+        const creditAccIndex = 1
+        const debitAmount = 3
+        const creditAmount = 6
+
+        accountsStore.transferWithDifferentCurrency(
+          debitAccIndex,
+          creditAccIndex,
+          debitAmount,
+          creditAmount
+        )
+
+        expect(accountsStore.accounts[debitAccIndex].sum).toEqual(7)
+        expect(accountsStore.accounts[creditAccIndex].sum).toEqual(18)
+      })
+    })
   })
 })

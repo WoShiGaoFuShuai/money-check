@@ -5,6 +5,7 @@ export function performOperation(left: number, right: number, operator: string):
     switch (operator) {
       case "+":
         return new Calc(left).sum(right).finish()
+
       case "-":
         return new Calc(left).minus(right).finish()
       case "/": {

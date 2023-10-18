@@ -8,19 +8,7 @@
       ]"
     />
 
-    <div class="nav-top">
-      <nav>
-        <ul class="nav-top__ul">
-          <li>
-            <font-awesome-icon icon="fa-solid fa-credit-card" />
-          </li>
-
-          <li>
-            <font-awesome-icon icon="fa-solid fa-repeat" />
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <NavTop :links="links" />
 
     <AccountsList
       :edit-mode="editMode"
@@ -35,7 +23,7 @@
     <EditCurrentAccount
       v-if="isShowEditCurrentAccount"
       :account-to-edit="accountToEdit"
-      @hideEditCurrentAccount="isShowEditCurrentAccount = false"
+      @hide-edit-current-account="isShowEditCurrentAccount = false"
     />
   </div>
 </template>
@@ -45,6 +33,7 @@ import TopNavbar from "@/components/navigation/TopNavbar.vue"
 import NewAccount from "@/components/accounts/NewAccount.vue"
 import AccountsList from "@/components/accounts/AccountsList.vue"
 import EditCurrentAccount from "@/components/accounts/EditCurrentAccount.vue"
+import NavTop from "@/components/shared/NavTop.vue"
 import { useAccountsStore } from "@/stores/accounts"
 import { ref, reactive } from "vue"
 
@@ -54,6 +43,16 @@ export interface AccountToEdit {
   symbol: string
   index: number
 }
+
+export interface NavTopPropLinks {
+  icon: string
+  linkName: string
+}
+
+const links: NavTopPropLinks[] = [
+  { icon: "fa-solid fa-credit-card", linkName: "accounts" },
+  { icon: "fa-solid fa-repeat", linkName: "transfers" }
+]
 
 const accountsStore = useAccountsStore()
 
@@ -86,14 +85,5 @@ const showEditCurrentAccount = (account: AccountToEdit) => {
 <style lang="css" scoped>
 .accountsView__wrapper {
   position: relative;
-}
-.nav-top {
-  background-color: var(--grey-primary);
-  padding: 48px 4px 4px 4px;
-}
-
-.nav-top__ul {
-  display: flex;
-  justify-content: space-around;
 }
 </style>

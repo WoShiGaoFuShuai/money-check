@@ -32,6 +32,16 @@ const router = createRouter({
       path: "/settings",
       name: "settings",
       component: () => import("@/views/SettingsView.vue")
+    },
+    {
+      path: "/transfers",
+      name: "transfers",
+      component: () => import("@/views/TransfersView.vue")
+    },
+    {
+      path: "/transfers-history",
+      name: "transfers-history",
+      component: () => import("@/views/TrasnfersHistoryView.vue")
     }
   ]
 })
