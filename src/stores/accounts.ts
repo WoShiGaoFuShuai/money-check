@@ -1,9 +1,11 @@
 import { defineStore } from "pinia"
 import { useCalculatorStore } from "@/stores/calculator"
 import { useSpendStore } from "@/stores/spend"
+import { useEarnStore } from "@/stores/earn"
 import type { CategoryObject } from "@/stores/categories"
 import { Calc } from "calc-js"
 import { performOperation } from "@/helpers/performOperation"
+import { createSpendCardInfo } from "@/helpers/createSpendCardInfo"
 
 export interface Account {
   title: string
@@ -69,16 +71,39 @@ export const useAccountsStore = defineStore("accounts", {
         }
 
         if (categoryInfo !== null) {
-          const spendCardInfo: SpendCardInfo = {
-            sum: numericResult,
-            ...categoryInfo,
-            timestamp: Date.now(),
-            account: this.getterActiveAccount?.title || null,
-            currency: this.getterActiveAccount?.currency || null
-          }
+          const spendCardInfo: SpendCardInfo = createSpendCardInfo(categoryInfo, numericResult)
 
           const spendStore = useSpendStore()
           spendStore.addToSpend(spendCardInfo)
+        }
+
+        return true
+      } else {
+        return false
+      }
+    },
+    addSumActiveAccount(categoryInfo: CategoryObject | null = null) {
+      const calculatorStore = useCalculatorStore()
+      const outputBeforeOperatorNum: number = parseFloat(calculatorStore.outputBeforeOperator)
+      const outputAfterOperatorNum: number = parseFloat(calculatorStore.outputAfterOperator)
+      const currentOperator = calculatorStore.currentOperator
+
+      const numericResult = isNaN(outputAfterOperatorNum)
+        ? outputBeforeOperatorNum
+        : performOperation(outputBeforeOperatorNum, outputAfterOperatorNum, currentOperator!)
+
+      // to prevent negative numbers and 0 be added to the accounts
+      if (numericResult > 0) {
+        if (this.getterActiveAccount && !isNaN(numericResult)) {
+          const index = this.accounts.indexOf(this.getterActiveAccount)
+          this.accounts[index].sum = new Calc(this.accounts[index].sum).sum(numericResult).finish()
+        }
+
+        if (categoryInfo !== null) {
+          const spendCardInfo: SpendCardInfo = createSpendCardInfo(categoryInfo, numericResult)
+
+          const earnStore = useEarnStore()
+          earnStore.addToEarn(spendCardInfo)
         }
         return true
       } else {

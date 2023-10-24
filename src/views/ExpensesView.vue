@@ -9,11 +9,13 @@
 
   <SpendCard
     :date="'today'"
+    :mode="'Spent'"
     :spend-sorted="spendStore.spendTodaySorted"
   />
   <template v-if="spendStore.spendYesterdaySorted.length">
     <SpendCard
       :date="'yesterday'"
+      :mode="'Spent'"
       :spend-sorted="spendStore.spendYesterdaySorted"
     />
   </template>

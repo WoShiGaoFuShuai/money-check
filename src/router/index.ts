@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"
+import { ref } from "vue"
+
+export const previousRoute = ref<string | null>(null)
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,4 +49,8 @@ const router = createRouter({
   ]
 })
 
+router.beforeEach((to, from, next) => {
+  previousRoute.value = from.name
+  next()
+})
 export default router

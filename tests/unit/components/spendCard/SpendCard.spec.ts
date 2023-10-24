@@ -13,6 +13,7 @@ describe("SpendCard", () => {
       props: {
         spendSorted: [],
         date: "today",
+        mode: "",
         ...props
       }
     })
@@ -30,14 +31,26 @@ describe("SpendCard", () => {
     }
   }
 
-  it("displays 'spent today' if today when app renders", () => {
+  it("displays 'Spent today' if user in expenses window", () => {
     const props = {
-      date: "today"
+      date: "today",
+      mode: "Spent"
     }
     renderSpendCard(props)
 
     const spendTotal = screen.getByRole("spend-total")
-    expect(spendTotal.textContent).toContain("spent today")
+    expect(spendTotal.textContent).toContain("Spent today")
+  })
+
+  it("displays 'Earned today' if user in expenses window", () => {
+    const props = {
+      date: "today",
+      mode: "Earned"
+    }
+    renderSpendCard(props)
+
+    const spendTotal = screen.getByRole("spend-total")
+    expect(spendTotal.textContent).toContain("Earned today")
   })
 
   describe("displays sum for total spends", () => {
@@ -88,14 +101,15 @@ describe("SpendCard", () => {
         const spendCard2 = createSpendCard({ sum: 1, currency: "Rp" })
 
         const props = {
-          spendSorted: [spendCard1, spendCard2]
+          spendSorted: [spendCard1, spendCard2],
+          mode: "Spent"
         }
         renderSpendCard(props)
         const firstSumAndCurrency = props.spendSorted[0].sum + props.spendSorted[0].currency
         const secondSumAndCurrency = props.spendSorted[1].sum + props.spendSorted[1].currency
         const spendTotal = screen.getByRole("spend-total")
         expect(spendTotal.textContent).toBe(
-          " spent today:" + " " + firstSumAndCurrency + ", " + secondSumAndCurrency
+          "Spent today:" + " " + firstSumAndCurrency + ", " + secondSumAndCurrency
         )
       })
     })

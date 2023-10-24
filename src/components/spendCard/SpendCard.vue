@@ -4,7 +4,7 @@
       class="spendCard__totalSpend"
       role="spend-total"
     >
-      spent {{ date }}:
+      {{ mode }} {{ date }}:
       <span
         v-if="!Object.keys(currencyTotals).length"
         role="spend-total-sum-zero"
@@ -48,6 +48,10 @@ const props = defineProps({
     required: true
   },
   date: {
+    type: String as () => string,
+    required: true
+  },
+  mode: {
     type: String as () => string,
     required: true
   }

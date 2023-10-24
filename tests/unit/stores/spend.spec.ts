@@ -79,6 +79,7 @@ describe("spend store", () => {
           const yesterdaySpendCard = createSpendCard({ timestamp: Date.now() - oneDay })
 
           const spendStore = useSpendStore()
+          spendStore.spend = []
           spendStore.addToSpend(todaySpendCard)
           spendStore.addToSpend(yesterdaySpendCard)
 
@@ -96,6 +97,7 @@ describe("spend store", () => {
           const yesterdaySpendCard3 = createSpendCard({ timestamp: Date.now() - ThirtyHours })
 
           const spendStore = useSpendStore()
+          spendStore.spend = []
           spendStore.addToSpend(yesterdaySpendCard3)
           spendStore.addToSpend(yesterdaySpendCard1)
           spendStore.addToSpend(yesterdaySpendCard2)
@@ -128,7 +130,7 @@ describe("spend store", () => {
         })
       })
 
-      describe("sortedSpends", () => {
+      describe("sortedStoreItems", () => {
         it("should sort spends in descending order", () => {
           const spendStore = useSpendStore()
           spendStore.spend = []
@@ -145,7 +147,7 @@ describe("spend store", () => {
           spendStore.addToSpend(spendAugust)
           spendStore.addToSpend(spendJuly)
 
-          expect(spendStore.sortedSpends).toStrictEqual([spendAugust, spendJuly, spendJune])
+          expect(spendStore.sortedStoreItems).toStrictEqual([spendAugust, spendJuly, spendJune])
         })
       })
     })

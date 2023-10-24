@@ -29,19 +29,34 @@ const categoriesStore = useCategoriesStore()
 const accountsStore = useAccountsStore()
 const calculatorStore = useCalculatorStore()
 
-const handleClick = async (category: CategoryObject) => {
+enum Mode {
+  INCOME = "income",
+  DEFAULT = "default"
+}
+
+const props = defineProps({
+  mode: {
+    type: String,
+    required: false,
+    default: () => "default"
+  }
+})
+
+const handleClick = (category: CategoryObject) => {
   if (category.categoryName !== "All Categories") {
     const display = document.querySelector(".display")
-    const success = await accountsStore.subtractSumActiveAccount(category)
-
-    console.log("success", success)
+    let success: boolean
+    if (props.mode === Mode.INCOME) {
+      success = accountsStore.addSumActiveAccount(category)
+    } else {
+      success = accountsStore.subtractSumActiveAccount(category)
+    }
 
     if (success) {
       calculatorStore.clearField()
       categoriesStore.changeShowCategoriesExpenses(false)
       display?.classList.remove("display-error")
     } else {
-      console.log("?!")
       display?.classList.add("display-error")
     }
   }

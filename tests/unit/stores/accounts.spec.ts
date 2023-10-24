@@ -1,6 +1,9 @@
 import { createPinia, setActivePinia } from "pinia"
 import { useAccountsStore } from "../../../src/stores/accounts"
 import { useCalculatorStore } from "../../../src/stores/calculator"
+import { useSpendStore } from "../../../src/stores/spend"
+
+import { vi } from "vitest"
 
 describe("actions", () => {
   beforeEach(() => {
@@ -41,6 +44,59 @@ describe("actions", () => {
           calculatorStore.outputAfterOperator = ""
 
           const result = await accountsStore.subtractSumActiveAccount()
+
+          expect(result).toBe(false)
+        })
+      })
+
+      describe("when passed categoryInfo is null", () => {
+        it("do not add to spend", () => {
+          const spendStore = useSpendStore()
+          const addToSpendStub = vi.fn()
+          spendStore.addToSpend = addToSpendStub
+
+          const calculatorStore = useCalculatorStore()
+
+          const accountsStore = useAccountsStore()
+          accountsStore.accounts = [
+            { title: "acc1", sum: 0, active: true, currency: "$" },
+            { title: "acc2", sum: 0, active: false, currency: "$" }
+          ]
+
+          accountsStore.subtractSumActiveAccount()
+          calculatorStore.outputAfterOperator = "100"
+
+          expect(addToSpendStub).not.toHaveBeenCalled()
+        })
+      })
+    })
+
+    describe("AddSumActiveAccount", () => {
+      it("adds sum from the active account", () => {
+        const calculatorStore = useCalculatorStore()
+        const accountsStore = useAccountsStore()
+        accountsStore.accounts = [
+          { title: "acc1", sum: 0, active: true, currency: "$" },
+          { title: "acc2", sum: 0, active: false, currency: "$" }
+        ]
+        calculatorStore.outputBeforeOperator = "100"
+
+        const activeAccountSumBefore = accountsStore.getterActiveAccount?.sum ?? 0
+
+        accountsStore.addSumActiveAccount()
+        const result = activeAccountSumBefore + parseInt(calculatorStore.outputBeforeOperator)
+
+        expect(accountsStore.getterActiveAccount?.sum).toEqual(result)
+      })
+
+      describe("when outputBeforeOperatorNum is negative number", () => {
+        it("should return false", async () => {
+          const accountsStore = useAccountsStore()
+          const calculatorStore = useCalculatorStore()
+          calculatorStore.outputBeforeOperator = "-1"
+          calculatorStore.outputAfterOperator = ""
+
+          const result = accountsStore.subtractSumActiveAccount()
 
           expect(result).toBe(false)
         })

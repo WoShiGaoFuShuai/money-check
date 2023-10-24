@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/vue"
 import { setActivePinia, createPinia } from "pinia"
-import { vi } from "vitest"
 import userEvent from "@testing-library/user-event"
 import ExpensesCategories from "../../../../src/components/expensesView/ExpensesCategories.vue"
 import { useCategoriesStore } from "../../../../src/stores/categories"
 import { useAccountsStore } from "../../../../src/stores/accounts"
+import { vi } from "vitest"
 
 describe("ExpensesCategories", () => {
   beforeEach(() => {
@@ -46,21 +46,60 @@ describe("ExpensesCategories", () => {
     })
   })
 
-  // describe("when uset clicks on other categories", () => {
-  //   it.only("it should add amount to the account", async () => {
-  //     const { addSumToActiveAccount } = useAccountsStore()
-  //     const accountsStoreAddSumToActiveAccountStub = vi.fn(addSumToActiveAccount)
+  describe("when user clicks on the category in expenses window", () => {
+    it("should subtract sum from account", async () => {
+      const accountsStore = useAccountsStore()
+      const subtractSumActiveAccountStub = vi.fn()
+      accountsStore.subtractSumActiveAccount = subtractSumActiveAccountStub
 
-  //     render(ExpensesCategories, {
-  //       global: {
-  //         stubs: {
-  //           FontAwesomeIcon: true
-  //         }
-  //       }
-  //     })
-  //     const buttonFood = screen.getByText(/food/i)
-  //     await userEvent.click(buttonFood)
-  //     expect(accountsStoreAddSumToActiveAccountStub).toHaveBeenCalledTimes(1)
-  //   })
-  // })
+      const categoriesStore = useCategoriesStore()
+      categoriesStore.categoriesExpenses = [
+        { iconName: "fa-solid fa-list", categoryName: "All Categories" },
+        { iconName: "fa-solid fa-basket-shopping", categoryName: "Food" }
+      ]
+
+      render(ExpensesCategories, {
+        props: {
+          mode: "default"
+        },
+        global: {
+          stubs: {
+            FontAwesomeIcon: true
+          }
+        }
+      })
+
+      const foodCategory = screen.getByText(/food/i) as HTMLDivElement
+      await userEvent.click(foodCategory)
+      expect(subtractSumActiveAccountStub).toHaveBeenCalled()
+    })
+  })
+
+  describe("when uset clicks on other categories in income window", () => {
+    it("it should add amount to the account", async () => {
+      const accountsStore = useAccountsStore()
+      const accountsStoreAddSumActiveAccount = vi.fn()
+      accountsStore.addSumActiveAccount = accountsStoreAddSumActiveAccount
+
+      const categoriesStore = useCategoriesStore()
+      categoriesStore.categoriesExpenses = [
+        { iconName: "fa-solid fa-list", categoryName: "All Categories" },
+        { iconName: "fa-solid fa-basket-shopping", categoryName: "Food" }
+      ]
+
+      render(ExpensesCategories, {
+        props: {
+          mode: "income"
+        },
+        global: {
+          stubs: {
+            FontAwesomeIcon: true
+          }
+        }
+      })
+      const buttonFood = screen.getByText(/food/i) as HTMLDivElement
+      await userEvent.click(buttonFood)
+      expect(accountsStoreAddSumActiveAccount).toHaveBeenCalledTimes(1)
+    })
+  })
 })
