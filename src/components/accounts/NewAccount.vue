@@ -7,9 +7,9 @@
 
     <NewAccountForm
       :currencies="accountsStore.currencies"
+      role="NewAccountFormComponent"
       @hide-new-account-modal="hideNewAccountModal"
       @accounts-store-add-new-acc="addNewAccount"
-      role="NewAccountFormComponent"
     />
 
     <h3 class="new__account-text">
@@ -50,5 +50,18 @@ const addNewAccount = (newAccount: Account) => {
   width: 100%;
   background-color: white;
   height: 100vh;
+}
+
+.settings {
+  color: var(--blue-primary);
+}
+
+.new__account-text {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.link {
+  text-decoration: none;
 }
 </style>

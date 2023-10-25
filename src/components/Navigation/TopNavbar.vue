@@ -3,10 +3,19 @@
     class="topbar"
     :style="{ backgroundColor: bgColor }"
   >
-    <div class="topbar-icons__left"></div>
+    <div class="topbar-icons__left">
+      <router-link
+        v-if="showArrowBack"
+        :to="linkTo"
+        role="routerLinkBack"
+        data-testId="backArrow"
+      >
+        <font-awesome-icon icon="fa-solid fa-arrow-left" />
+      </router-link>
+    </div>
 
     <div class="topbar-name">
-      <h3>{{ props.title }}</h3>
+      <h3 data-testId="title">{{ props.title }}</h3>
     </div>
     <div
       v-if="props.rightIcons.length"
@@ -16,8 +25,10 @@
         v-for="icon in props.rightIcons"
         :key="icon.icon"
         class="right-iton__item"
+        data-testId="rightIcon"
       >
         <font-awesome-icon
+          role="FAicon"
           :icon="icon.icon"
           @click="icon.handler"
         />
@@ -27,6 +38,9 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue"
+import { previousRoute } from "@/router/index"
+
 const props = defineProps({
   rightIcons: {
     type: Array as () => { icon: string; handler?: () => void }[],
@@ -45,6 +59,14 @@ const props = defineProps({
     default: () =>
       getComputedStyle(document.documentElement).getPropertyValue("--blue-primary").trim()
   }
+})
+
+const linkTo = computed(() => {
+  return previousRoute.value?.length ? { name: previousRoute.value } : { name: "" }
+})
+
+const showArrowBack = computed(() => {
+  return previousRoute.value?.length ? true : false
 })
 </script>
 <style lang="css" scoped>

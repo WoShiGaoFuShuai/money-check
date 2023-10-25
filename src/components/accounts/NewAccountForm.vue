@@ -88,7 +88,6 @@ const receivedCurrencySymbol = ref("")
 // change account balance + -
 const changeAccountBalance = () => {
   if (accountBalanceInput.value !== 0) {
-    console.log("123")
     accountBalanceInput.value = -accountBalanceInput.value
   }
   return

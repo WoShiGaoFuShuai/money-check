@@ -4,6 +4,7 @@ import { nextTick } from "vue"
 import userEvent from "@testing-library/user-event"
 import { useAccountsStore } from "../../../../src/stores/accounts"
 import { vi } from "vitest"
+import { RouterLinkStub } from "@vue/test-utils"
 
 // Define a stub for the NewAccountsCurrencySelect component
 const NewAccountsCurrencySelect = {
@@ -36,7 +37,8 @@ describe("EditCurrentAccount", () => {
         },
         stubs: {
           FontAwesomeIcon: true,
-          NewAccountsCurrencySelect
+          NewAccountsCurrencySelect,
+          RouterLink: RouterLinkStub
         }
       }
     })

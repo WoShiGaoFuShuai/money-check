@@ -73,6 +73,17 @@
         />
       </div>
     </div>
+
+    <h3 class="new__account-text">
+      Can't find the currency you need?
+      <br />
+      <router-link
+        class="link"
+        :to="{ name: 'settings' }"
+      >
+        <span class="settings"> Go to Settings </span>
+      </router-link>
+    </h3>
   </div>
 </template>
 <script setup lang="ts">
@@ -112,7 +123,6 @@ const editAccount = () => {
 
 const changeAccountBalance = () => {
   if (accountBalanceInput.value !== 0) {
-    console.log("123")
     accountBalanceInput.value = -accountBalanceInput.value
   }
   return

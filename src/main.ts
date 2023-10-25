@@ -31,7 +31,8 @@ import {
   faTrash,
   faCheck,
   faChevronRight,
-  faArrowRightLong
+  faArrowRightLong,
+  faArrowLeft
 } from "@fortawesome/free-solid-svg-icons"
 
 library.add(
@@ -57,7 +58,8 @@ library.add(
   faTrash,
   faCheck,
   faChevronRight,
-  faArrowRightLong
+  faArrowRightLong,
+  faArrowLeft
 )
 
 const app = createApp(App)
