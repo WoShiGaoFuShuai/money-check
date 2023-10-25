@@ -71,6 +71,13 @@
           role="editAccountBtn"
           @click="editAccount"
         />
+
+        <font-awesome-icon
+          class="btn__primary"
+          icon="fa-solid fa-xmark"
+          role="closeAccountBtn"
+          @click="cancelEditingAccount"
+        />
       </div>
     </div>
 
@@ -118,6 +125,10 @@ const editAccount = () => {
 
   accountsStore.editAccount(editAccount, index)
 
+  emit("hideEditCurrentAccount")
+}
+
+const cancelEditingAccount = () => {
   emit("hideEditCurrentAccount")
 }
 
@@ -213,6 +224,10 @@ onMounted(() => {
   background-color: var(--blue-primary);
   padding: 8px 12px;
   border-radius: 6px;
+}
+
+.btn__primary:first-child {
+  margin-right: 16px;
 }
 
 .error {

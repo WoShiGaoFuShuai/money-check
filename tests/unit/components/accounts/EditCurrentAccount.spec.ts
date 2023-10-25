@@ -106,4 +106,15 @@ describe("EditCurrentAccount", () => {
       expect(accountBalanceInput.value).toBe("-1")
     })
   })
+
+  describe("when user clicks on X button", () => {
+    it("should close edit current account window", async () => {
+      const { emitted } = renderEditCurrentAccount()
+
+      const closeBtn = screen.getByRole("closeAccountBtn")
+      await userEvent.click(closeBtn)
+
+      expect(emitted()).toHaveProperty("hideEditCurrentAccount")
+    })
+  })
 })

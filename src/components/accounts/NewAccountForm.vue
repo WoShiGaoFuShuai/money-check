@@ -64,6 +64,13 @@
         role="addNewAccountBtn"
         @click="addNewAccount"
       />
+
+      <font-awesome-icon
+        class="btn__primary"
+        icon="fa-solid fa-xmark"
+        role="closeNewAccountBtn"
+        @click="cancelAddingNewAccount"
+      />
     </div>
   </div>
 </template>
@@ -95,6 +102,10 @@ const changeAccountBalance = () => {
 
 const receiveSelectedItem = (currencySymbol: string) => {
   receivedCurrencySymbol.value = currencySymbol
+}
+
+const cancelAddingNewAccount = () => {
+  emit("hideNewAccountModal")
 }
 
 const addNewAccount = () => {
@@ -174,6 +185,10 @@ const addNewAccount = () => {
   background-color: var(--blue-primary);
   padding: 8px 12px;
   border-radius: 6px;
+}
+
+.btn__primary:first-child {
+  margin-right: 16px;
 }
 
 .error {

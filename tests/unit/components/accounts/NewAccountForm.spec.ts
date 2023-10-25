@@ -110,4 +110,15 @@ describe("NewAccountForm", () => {
       expect(emitted()).not.toHaveProperty("accountsStoreAddNewAcc")
     })
   })
+
+  describe("when user clicks on X button", () => {
+    it("should close new account window", async () => {
+      const { emitted } = renderNewAccountForm()
+
+      const closeBtn = screen.getByRole("closeNewAccountBtn")
+      await userEvent.click(closeBtn)
+
+      expect(emitted()).toHaveProperty("hideNewAccountModal")
+    })
+  })
 })
