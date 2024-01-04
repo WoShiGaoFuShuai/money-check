@@ -5,17 +5,19 @@
 
   <AppCalculator />
 
-  <ExpensesCategories />
+  <ExpensesCategories :mode="Mode.EXPENSES" />
 
   <SpendCard
     :date="'today'"
     :mode="'Spent'"
+    :editing-route-name="'editing-transaction-expenses'"
     :spend-sorted="spendStore.spendTodaySorted"
   />
   <template v-if="spendStore.spendYesterdaySorted.length">
     <SpendCard
       :date="'yesterday'"
       :mode="'Spent'"
+      :editing-route-name="'editing-transaction-expenses'"
       :spend-sorted="spendStore.spendYesterdaySorted"
     />
   </template>
@@ -35,6 +37,7 @@ import AppCalculator from "@/components/calculator/AppCalculator.vue"
 import ExpensesCategories from "@/components/expensesView/ExpensesCategories.vue"
 import SpendCard from "@/components/spendCard/SpendCard.vue"
 import { useSpendStore } from "@/stores/spend"
+import { Mode } from "@/components/expensesView/enums"
 
 const spendStore = useSpendStore()
 </script>

@@ -1,13 +1,15 @@
 import { render, screen } from "@testing-library/vue"
 import SpendCard from "../../../../src/components/spendCard/SpendCard.vue"
 import { useSpendStore } from "../../../../src/stores/spend"
+import { RouterLinkStub } from "@vue/test-utils"
 
 describe("SpendCard", () => {
   const renderSpendCard = (props = {}) => {
     render(SpendCard, {
       global: {
         stubs: {
-          FontAwesomeIcon: true
+          FontAwesomeIcon: true,
+          RouterLink: RouterLinkStub
         }
       },
       props: {

@@ -6,6 +6,7 @@ import type { CategoryObject } from "@/stores/categories"
 import { Calc } from "calc-js"
 import { performOperation } from "@/helpers/performOperation"
 import { createSpendCardInfo } from "@/helpers/createSpendCardInfo"
+import { Mode } from "@/components/expensesView/enums"
 
 export interface Account {
   title: string
@@ -24,14 +25,14 @@ export interface SpendCardInfo {
   categoryName: string
   sum: number
   timestamp: number
-  account: string | null
+  account: string
   currency: string | null
 }
 
 export const useAccountsStore = defineStore("accounts", {
   state: () => ({
     accounts: [
-      { title: "acc1", sum: 3.2, currency: "Rp", active: true },
+      { title: "acc1", sum: 5, currency: "Rp", active: true },
       { title: "acc2", sum: 10, currency: "$", active: false },
       { title: "acc3", sum: 100, currency: "€", active: false },
       { title: "acc4", sum: 1000, currency: "¥", active: false }
@@ -175,8 +176,83 @@ export const useAccountsStore = defineStore("accounts", {
         creditAmount,
         "+"
       )
+    },
+    changeSumEditedTransaction(
+      accOldName: string,
+      accOldSum: number,
+      accNewName: string,
+      accNewSum: number,
+      mode: Mode
+    ) {
+      const oldAccount = this.accounts.find((item) => item.title === accOldName)
+      const newAccount = this.accounts.find((item) => item.title === accNewName)
+
+      if (oldAccount && newAccount) {
+        const oldAccountIndex = this.accounts.indexOf(oldAccount)
+        const newAccountIndex = this.accounts.indexOf(newAccount)
+
+        // CHECK MODE, is it is expenses we add sum to old account and subsctract from new.
+        // Because if previous sum was 5 and new 10, it means we need to +5 to previous and -10 to new account.
+        const oldAccountOperator = mode === Mode.EXPENSES ? "+" : "-"
+        const newAccountOperator = mode === Mode.EXPENSES ? "-" : "+"
+
+        this.accounts[oldAccountIndex].sum = performOperation(
+          this.accounts[oldAccountIndex].sum,
+          accOldSum,
+          oldAccountOperator
+        )
+        this.accounts[newAccountIndex].sum = performOperation(
+          this.accounts[newAccountIndex].sum,
+          accNewSum,
+          newAccountOperator
+        )
+      }
+    },
+    changeSumDeletedTransaction(accName: string, accSum: number, mode: Mode) {
+      const account = this.accounts.find((item) => item.title === accName)
+
+      if (account) {
+        const accountIndex = this.accounts.indexOf(account)
+
+        //Checking MOde, if === expenses => we add sum from deleted transaction to acc,
+        // if income => we remove sum from account
+        const operator = mode === Mode.EXPENSES ? "+" : "-"
+
+        this.accounts[accountIndex].sum = performOperation(
+          this.accounts[accountIndex].sum,
+          accSum,
+          operator
+        )
+      }
     }
+
+    // changeSumEditedTransactionEarn(
+    //   accOldName: string,
+    //   accOldSum: number,
+    //   accNewName: string,
+    //   accNewSum: number
+    // ) {
+    //   const oldAccount = this.accounts.find((item) => item.title === accOldName)
+    //   const newAccount = this.accounts.find((item) => item.title === accNewName)
+
+    //   if (oldAccount && newAccount) {
+    //     const oldAccountIndex = this.accounts.indexOf(oldAccount)
+    //     const newAccountIndex = this.accounts.indexOf(newAccount)
+
+    //     this.accounts[oldAccountIndex].sum = performOperation(
+    //       this.accounts[oldAccountIndex].sum,
+    //       accOldSum,
+    //       "-"
+    //     )
+    //     this.accounts[newAccountIndex].sum = performOperation(
+    //       this.accounts[newAccountIndex].sum,
+    //       accNewSum,
+    //       "+"
+    //     )
+    //   }
+    // }
   },
+
   getters: {
     getterActiveAccount(state) {
       return state.accounts.find((acc) => acc.active) || null

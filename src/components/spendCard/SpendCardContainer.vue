@@ -1,8 +1,9 @@
 <template>
-  <div
+  <router-link
     v-for="(spendItem, i) in props.spendSorted"
     :key="i"
-    class="spendCard__item"
+    class="spendCard__item router__link"
+    :to="{ name: props.editingRouteName, params: { timestamp: spendItem.timestamp } }"
     role="spendItem"
   >
     <div class="spendCard__left">
@@ -29,7 +30,7 @@
         </p>
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
 <script setup lang="ts">
 import type { SpendCardInfo } from "@/stores/accounts"
@@ -39,10 +40,17 @@ const props = defineProps({
   spendSorted: {
     type: Array as () => SpendCardInfo[],
     required: true
+  },
+  editingRouteName: {
+    type: String,
+    required: true
   }
 })
 </script>
 <style lang="css" scoped>
+.router__link {
+  text-decoration: none;
+}
 .spendCard__item {
   display: flex;
   justify-content: space-between;

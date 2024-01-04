@@ -1,5 +1,6 @@
 import { defineStore } from "pinia"
-import type { SpendCardInfo } from "./accounts"
+import { useAccountsStore, type SpendCardInfo } from "@/stores/accounts"
+import { Mode } from "@/components/expensesView/enums"
 type MonthName = string
 
 export const useSpendStore = defineStore("spend", {
@@ -50,6 +51,27 @@ export const useSpendStore = defineStore("spend", {
   actions: {
     addToSpend(value: SpendCardInfo) {
       this.spend.push(value)
+    },
+    deleteSpend(index: number) {
+      const accountsStore = useAccountsStore()
+      accountsStore.changeSumDeletedTransaction(
+        this.spend[index].account,
+        this.spend[index].sum,
+        Mode.EXPENSES
+      )
+      this.spend.splice(index, 1)
+    },
+    editSpend(newSpend: SpendCardInfo, index: number) {
+      const accountsStore = useAccountsStore()
+      accountsStore.changeSumEditedTransaction(
+        this.spend[index].account,
+        this.spend[index].sum,
+        newSpend.account,
+        newSpend.sum,
+        Mode.EXPENSES
+      )
+
+      this.spend.splice(index, 1, newSpend)
     }
   },
   getters: {

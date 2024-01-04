@@ -10,6 +10,13 @@ const routes = [
     component: () => import("@/views/ExpensesView.vue")
   },
   {
+    path: "/expenses/editing-transaction/:timestamp?",
+    name: "editing-transaction-expenses",
+    component: () => import("@/views/EditingTransactionView.vue"),
+    meta: { source: "expenses" }
+  },
+
+  {
     path: "/accounts",
     name: "accounts",
     component: () => import("@/views/AccountsView.vue")
@@ -18,6 +25,12 @@ const routes = [
     path: "/income",
     name: "income",
     component: () => import("@/views/IncomeView.vue")
+  },
+  {
+    path: "/income/editing-transaction/:timestamp?",
+    name: "editing-transaction-income",
+    component: () => import("@/views/EditingTransactionView.vue"),
+    meta: { source: "income" }
   },
   {
     path: "/categories",
@@ -43,6 +56,11 @@ const routes = [
     path: "/transfers-history",
     name: "transfers-history",
     component: () => import("@/views/TrasnfersHistoryView.vue")
+  },
+  {
+    path: "/editing-transaction/:timestamp?",
+    name: "editing-transaction",
+    component: () => import("@/views/EditingTransactionView.vue")
   }
 ]
 

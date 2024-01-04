@@ -2,6 +2,7 @@ import { createPinia, setActivePinia } from "pinia"
 import { useAccountsStore } from "../../../src/stores/accounts"
 import { useCalculatorStore } from "../../../src/stores/calculator"
 import { useSpendStore } from "../../../src/stores/spend"
+import * as helperModule from "../../../src/helpers/createSpendCardInfo"
 
 import { vi } from "vitest"
 
@@ -34,6 +35,35 @@ describe("actions", () => {
         const result = activeAccountSumBefore - parseInt(calculatorStore.outputBeforeOperator)
 
         expect(accountsStore.getterActiveAccount?.sum).toEqual(result)
+      })
+
+      describe("when subtractSumActiveAccount receives categoryInfo", () => {
+        it("calls createSpendCardInfo & addToSpend", () => {
+          const calculatorStore = useCalculatorStore()
+          const accountsStore = useAccountsStore()
+          accountsStore.accounts = [
+            { title: "acc1", sum: 0, active: true, currency: "$" },
+            { title: "acc2", sum: 0, active: false, currency: "$" }
+          ]
+          calculatorStore.outputBeforeOperator = "100"
+
+          const spendStore = useSpendStore()
+          const addToSpendMock = vi.fn()
+          spendStore.addToSpend = addToSpendMock
+
+          const mockCreateSpendCardInfo = vi.fn()
+          vi.spyOn(helperModule, "createSpendCardInfo").mockImplementation(mockCreateSpendCardInfo)
+
+          const categoryObject = {
+            iconName: "string",
+            categoryName: "string"
+          }
+          accountsStore.subtractSumActiveAccount(categoryObject)
+
+          expect(mockCreateSpendCardInfo).toHaveBeenCalledWith(categoryObject, expect.any(Number))
+          expect(addToSpendMock).toHaveBeenCalledTimes(1)
+          mockCreateSpendCardInfo.mockRestore()
+        })
       })
 
       describe("when outputBeforeOperatorNum is negative number", () => {
@@ -93,10 +123,11 @@ describe("actions", () => {
         it("should return false", async () => {
           const accountsStore = useAccountsStore()
           const calculatorStore = useCalculatorStore()
+
           calculatorStore.outputBeforeOperator = "-1"
           calculatorStore.outputAfterOperator = ""
 
-          const result = accountsStore.subtractSumActiveAccount()
+          const result = accountsStore.addSumActiveAccount()
 
           expect(result).toBe(false)
         })
@@ -117,6 +148,23 @@ describe("actions", () => {
           { title: "acc1", sum: 0, active: false, currency: "$" },
           { title: "acc2", sum: 0, active: true, currency: "$" }
         ])
+      })
+
+      describe("when active current account is the same as new active account", () => {
+        it("does nothing so active account stays the same", () => {
+          const accountsStore = useAccountsStore()
+          accountsStore.accounts = [
+            { title: "acc1", sum: 0, active: true, currency: "$" },
+            { title: "acc2", sum: 0, active: false, currency: "$" }
+          ]
+
+          accountsStore.changeActiveAccount("acc1")
+
+          expect(accountsStore.accounts).toStrictEqual([
+            { title: "acc1", sum: 0, active: true, currency: "$" },
+            { title: "acc2", sum: 0, active: false, currency: "$" }
+          ])
+        })
       })
     })
 
@@ -262,6 +310,44 @@ describe("actions", () => {
 
         expect(accountsStore.accounts[debitAccIndex].sum).toEqual(7)
         expect(accountsStore.accounts[creditAccIndex].sum).toEqual(18)
+      })
+    })
+
+    describe("changeSumEditedTransaction", () => {
+      describe("when user edits transaction", () => {
+        it("adds sum to old acc and subtracts sum from new acc", () => {
+          const accountsStore = useAccountsStore()
+          accountsStore.accounts = [
+            { title: "acc1", sum: 10, currency: "$", active: true },
+            { title: "acc2", sum: 12, currency: "$", active: false }
+          ]
+
+          const accOldName = "acc1"
+          const accOldSum = 5
+          const accNewName = "acc2"
+          const accNewSum = 6
+
+          accountsStore.changeSumEditedTransaction(accOldName, accOldSum, accNewName, accNewSum)
+
+          expect(accountsStore.accounts[0].sum).toEqual(15)
+          expect(accountsStore.accounts[1].sum).toEqual(6)
+        })
+      })
+    })
+
+    describe("changeSumDeletedTransaction", () => {
+      describe("when user deletes transaction", () => {
+        it("adds sum to the account", () => {
+          const accountsStore = useAccountsStore()
+          accountsStore.accounts = [{ title: "acc1", sum: 10, currency: "$", active: true }]
+
+          const accName = "acc1"
+          const accSum = 10
+
+          accountsStore.changeSumDeletedTransaction(accName, accSum)
+
+          expect(accountsStore.accounts[0].sum).toEqual(20)
+        })
       })
     })
   })

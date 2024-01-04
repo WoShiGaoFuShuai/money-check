@@ -23,4 +23,20 @@ describe("NewAccountsCurrencySelect", () => {
     const emittedValue = emitted().emitSelectedItem[1] as string
     expect(emittedValue).toEqual(["€"])
   })
+
+  it("emits emitSelectedItem when first loaded", () => {
+    const allCurrency = [
+      { currency: "USD", symbol: "$" },
+      { currency: "EUR", symbol: "€" }
+    ]
+
+    const { emitted } = render(NewAccountsCurrencySelect, {
+      props: {
+        allCurrency
+      }
+    })
+
+    expect(emitted()).toHaveProperty("emitSelectedItem")
+    expect(emitted().emitSelectedItem[0]).toEqual(["$"])
+  })
 })

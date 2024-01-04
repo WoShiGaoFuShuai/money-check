@@ -1,5 +1,7 @@
 import { createPinia, setActivePinia } from "pinia"
 import { useSpendStore } from "../../../src/stores/spend"
+import { useAccountsStore } from "../../../src/stores/accounts"
+import { vi } from "vitest"
 
 describe("spend store", () => {
   beforeEach(() => {
@@ -148,6 +150,55 @@ describe("spend store", () => {
           spendStore.addToSpend(spendJuly)
 
           expect(spendStore.sortedStoreItems).toStrictEqual([spendAugust, spendJuly, spendJune])
+        })
+      })
+
+      describe("deleteSpend", () => {
+        it("adds sum to account and detetes spend", () => {
+          const spendStore = useSpendStore()
+          spendStore.spend = []
+          const firstSpend = createSpendCard()
+          const secondSpend = createSpendCard()
+          spendStore.addToSpend(firstSpend)
+          spendStore.addToSpend(secondSpend)
+
+          const accountsStore = useAccountsStore()
+          const changeSumDeletedTransactionMock = vi.fn()
+          accountsStore.changeSumDeletedTransaction = changeSumDeletedTransactionMock
+
+          spendStore.deleteSpend(0)
+          expect(spendStore.spend.length).toEqual(1)
+          expect(changeSumDeletedTransactionMock).toHaveBeenCalled()
+        })
+      })
+
+      describe("editSpend", () => {
+        describe("when user edits transaction", () => {
+          it("removes previous transaction and adds a new one", () => {
+            const accountsStore = useAccountsStore()
+            const changeSumEditedTransactionMock = vi.fn()
+            accountsStore.changeSumEditedTransaction = changeSumEditedTransactionMock
+
+            const spendStore = useSpendStore()
+            spendStore.spend = []
+            const firstSpend = createSpendCard({ account: "first" })
+            const secondSpend = createSpendCard({ account: "second" })
+            spendStore.addToSpend(firstSpend)
+            spendStore.addToSpend(secondSpend)
+
+            const newSpend = {
+              iconName: "",
+              categoryName: "",
+              sum: 0,
+              timestamp: 1,
+              account: "new acc",
+              currency: ""
+            }
+
+            spendStore.editSpend(newSpend, 0)
+
+            expect(spendStore.spend[0]).toEqual(newSpend)
+          })
         })
       })
     })

@@ -2,6 +2,7 @@
   <div
     v-show="categoriesStore.showCategoriesExpenses"
     class="category__wrapper"
+    data-testid="expenses__categoriesWrapper"
   >
     <div
       v-for="(category, i) in categoriesStore.categoriesExpenses"
@@ -25,20 +26,17 @@ import { useCategoriesStore } from "@/stores/categories"
 import { useAccountsStore } from "@/stores/accounts"
 import { useCalculatorStore } from "@/stores/calculator"
 import type { CategoryObject } from "@/stores/categories"
+import { Mode } from "@/components/expensesView/enums"
+
 const categoriesStore = useCategoriesStore()
 const accountsStore = useAccountsStore()
 const calculatorStore = useCalculatorStore()
-
-enum Mode {
-  INCOME = "income",
-  DEFAULT = "default"
-}
 
 const props = defineProps({
   mode: {
     type: String,
     required: false,
-    default: () => "default"
+    default: () => "expenses"
   }
 })
 

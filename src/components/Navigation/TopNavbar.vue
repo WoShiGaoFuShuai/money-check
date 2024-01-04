@@ -4,14 +4,7 @@
     :style="{ backgroundColor: bgColor }"
   >
     <div class="topbar-icons__left">
-      <router-link
-        v-if="showArrowBack"
-        :to="linkTo"
-        role="routerLinkBack"
-        data-testId="backArrow"
-      >
-        <font-awesome-icon icon="fa-solid fa-arrow-left" />
-      </router-link>
+      <slot name="left-icons"></slot>
     </div>
 
     <div class="topbar-name">
@@ -30,6 +23,7 @@
         <font-awesome-icon
           role="FAicon"
           :icon="icon.icon"
+          :aria-label="icon.label"
           @click="icon.handler"
         />
       </div>
@@ -38,12 +32,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue"
-import { previousRoute } from "@/router/index"
-
 const props = defineProps({
   rightIcons: {
-    type: Array as () => { icon: string; handler?: () => void }[],
+    type: Array as () => { icon: string; handler?: () => void; label?: string }[],
     required: false,
     default() {
       return []
@@ -59,14 +50,6 @@ const props = defineProps({
     default: () =>
       getComputedStyle(document.documentElement).getPropertyValue("--blue-primary").trim()
   }
-})
-
-const linkTo = computed(() => {
-  return previousRoute.value?.length ? { name: previousRoute.value } : { name: "" }
-})
-
-const showArrowBack = computed(() => {
-  return previousRoute.value?.length ? true : false
 })
 </script>
 <style lang="css" scoped>

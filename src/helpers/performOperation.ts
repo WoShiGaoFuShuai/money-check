@@ -9,7 +9,6 @@ export function performOperation(left: number, right: number, operator: string):
       case "-":
         return new Calc(left).minus(right).finish()
       case "/": {
-        // return new Calc(left).divide(right).finish()
         return Math.round((left / right) * 100) / 100
       }
       case "*":

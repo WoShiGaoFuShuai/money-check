@@ -13,7 +13,8 @@ export default mergeConfig(
       transformMode: {
         web: [/\.[jt]sx$/]
       },
-      mockReset: true
+      mockReset: true,
+      setupFiles: ["./vitest.setup.ts"]
     }
   })
 )

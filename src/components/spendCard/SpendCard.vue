@@ -32,7 +32,10 @@
       v-else
       role="cards-container"
     >
-      <SpendCardContainer :spend-sorted="props.spendSorted" />
+      <SpendCardContainer
+        :editing-route-name="editingRouteName"
+        :spend-sorted="props.spendSorted"
+      />
     </div>
   </div>
 </template>
@@ -53,6 +56,10 @@ const props = defineProps({
   },
   mode: {
     type: String as () => string,
+    required: true
+  },
+  editingRouteName: {
+    type: String,
     required: true
   }
 })

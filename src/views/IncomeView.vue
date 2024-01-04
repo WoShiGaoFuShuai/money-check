@@ -8,17 +8,19 @@
 
   <AppCalculator />
 
-  <ExpensesCategories :mode="'income'" />
+  <ExpensesCategories :mode="Mode.INCOME" />
 
   <SpendCard
     :date="'today'"
     :mode="'Earned'"
+    :editing-route-name="'editing-transaction-income'"
     :spend-sorted="earnStore.earnTodaySorted"
   />
   <template v-if="earnStore.earnYesterdaySorted.length">
     <SpendCard
       :date="'yesterday'"
       :mode="'Earned'"
+      :editing-route-name="'editing-transaction-income'"
       :spend-sorted="earnStore.earnYesterdaySorted"
     />
   </template>
@@ -38,6 +40,7 @@ import AppCalculator from "@/components/calculator/AppCalculator.vue"
 import ExpensesCategories from "@/components/expensesView/ExpensesCategories.vue"
 import SpendCard from "@/components/spendCard/SpendCard.vue"
 import { useEarnStore } from "@/stores/earn"
+import { Mode } from "@/components/expensesView/enums"
 
 const earnStore = useEarnStore()
 
