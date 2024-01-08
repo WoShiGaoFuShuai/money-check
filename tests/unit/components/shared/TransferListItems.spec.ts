@@ -1,5 +1,5 @@
 import { screen, render } from "@testing-library/vue"
-import TransferListItems from "../../../../src/components/shared/TransferListItems.vue"
+import TransferTransactionItem from "../../../../src/components/accounts/transfer/TransferTransactionItem.vue"
 import type {
   TransferData,
   TransferDataWithDifferentCurrency
@@ -28,10 +28,10 @@ const defaultTransferItemsArray = [
   }
 ]
 
-const renderTransferListItems = (
+const renderTransferTransactionItem = (
   customTransferItemsArray: TransferItemsArrayType = defaultTransferItemsArray
 ) => {
-  render(TransferListItems, {
+  render(TransferTransactionItem, {
     props: {
       transfersList: customTransferItemsArray
     },
@@ -43,9 +43,9 @@ const renderTransferListItems = (
   })
 }
 
-describe("TransferListItems", () => {
+describe("TransferTransactionItem", () => {
   it("renders correct amount of transfer items", () => {
-    renderTransferListItems()
+    renderTransferTransactionItem()
 
     const transferItemsAll = screen.getAllByTestId("transfer__item")
     expect(transferItemsAll.length).toEqual(2)
@@ -64,7 +64,7 @@ describe("TransferListItems", () => {
       }
     ]
 
-    renderTransferListItems(transferItemsArray)
+    renderTransferTransactionItem(transferItemsArray)
 
     const debitTitle = screen.getByTestId("transfer__debit")
     const creditTitle = screen.getByTestId("transfer__credit")
@@ -91,7 +91,7 @@ describe("TransferListItems", () => {
         }
       ]
 
-      renderTransferListItems(transferItemsArray)
+      renderTransferTransactionItem(transferItemsArray)
 
       const note = screen.getByTestId("transfer__note")
       expect(note).toBeVisible()
@@ -110,7 +110,7 @@ describe("TransferListItems", () => {
           currency: ""
         }
       ]
-      renderTransferListItems(transferItemsArray)
+      renderTransferTransactionItem(transferItemsArray)
 
       const note = screen.queryByTestId("transfer__note")
       expect(note).toBeNull()
@@ -131,7 +131,7 @@ describe("TransferListItems", () => {
             currency: "Y"
           }
         ]
-        renderTransferListItems(transferItemsArray)
+        renderTransferTransactionItem(transferItemsArray)
 
         const amount = screen.getByTestId("transfer__amount")
         expect(amount.textContent).toBe("10 Y")
@@ -153,7 +153,7 @@ describe("TransferListItems", () => {
             currencyCredit: "EUR"
           }
         ]
-        renderTransferListItems(transferItemsArray)
+        renderTransferTransactionItem(transferItemsArray)
 
         const amount = screen.getByTestId("transfer__amount")
         expect(amount.textContent).toBe("10 USD  (15 EUR)")

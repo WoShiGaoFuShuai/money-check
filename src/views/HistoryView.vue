@@ -9,7 +9,10 @@
     @new-selected-item="changeSelectedItem"
   />
 
-  <SpendCardContainer :spend-sorted="filteredSpend" />
+  <SpendCardContainer
+    :editing-route-name="editingRouteName"
+    :spend-sorted="filteredSpend"
+  />
 </template>
 <script setup lang="ts">
 import SpendCardContainer from "@/components/spendCard/SpendCardContainer.vue"
@@ -24,6 +27,9 @@ import { previousRoute } from "@/router/index"
 
 const spendStore = useSpendStore()
 const earnStore = useEarnStore()
+
+const editingRouteName =
+  previousRoute.value === "income" ? "editing-transaction-income" : "editing-transaction-expenses"
 
 const activeStore = previousRoute.value === "income" ? earnStore : spendStore
 const bgColor = previousRoute.value === "income" ? "var(--green-primary)" : ""

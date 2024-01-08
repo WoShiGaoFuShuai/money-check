@@ -105,6 +105,7 @@
 <script lang="ts" setup>
 import { ref, type Ref, computed, watch } from "vue"
 import type { Account } from "@/stores/accounts"
+import type { AccountsWithDifferentCurrencyTransfer } from "@/components/accounts/transfer/interfaces.transfer"
 
 const emit = defineEmits(["closeTransferExchangeRate", "submitTransferWithDifferentCurrency"])
 
@@ -153,10 +154,14 @@ const exchangeRateSecond = computed(() => {
 })
 
 const handleSubmit = () => {
-  const dataDebitCredit = {
+  const dataDebitCredit: AccountsWithDifferentCurrencyTransfer = {
     debitAmount: firstAmountInput.value,
-    creditAmount: secondAmountInput.value
+    creditAmount: secondAmountInput.value,
+    debitCurrency: props.debitAccount.currency,
+    creditCurrency: props.creditAccount.currency
   }
+
+  console.log("exchangeRate", dataDebitCredit)
 
   emit("submitTransferWithDifferentCurrency", dataDebitCredit)
   emit("closeTransferExchangeRate")

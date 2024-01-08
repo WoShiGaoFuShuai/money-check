@@ -1,9 +1,9 @@
 import { screen, render } from "@testing-library/vue"
-import TransferRecent from "../../../../../src/components/accounts/transfer/TransferRecent.vue"
+import TransferTransactions from "../../../../../src/components/accounts/transfer/TransferTransactions.vue"
 
-describe("TransferRecent", () => {
-  const renderTransferRecent = (props = {}) => {
-    render(TransferRecent, {
+describe("TransferTransactions", () => {
+  const renderTransferTransactions = (props = {}) => {
+    render(TransferTransactions, {
       props: {
         transfersList: [
           {
@@ -28,7 +28,7 @@ describe("TransferRecent", () => {
   }
   it("displays date", () => {
     const props = { date: "today1" }
-    renderTransferRecent(props)
+    renderTransferTransactions(props)
 
     const date = screen.getByTestId("date")
     expect(date.textContent).toBe(props.date)
@@ -37,7 +37,7 @@ describe("TransferRecent", () => {
   describe("when we do not have transfers yet", () => {
     it('displays "no transfers" text', () => {
       const props = { transfersList: [] }
-      renderTransferRecent(props)
+      renderTransferTransactions(props)
 
       const text = screen.getByTestId("no-transfers-text")
       expect(text).toBeInTheDocument()

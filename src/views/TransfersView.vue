@@ -17,6 +17,7 @@
 
   <TransferForm
     :is-same-currency="isSameCurrency"
+    :info-input-data="infoInputData"
     @show-exchange-rate="showExchangeRate"
     @submit-transfer="submitTransfer"
     @send-trasnfer-info-form-different-currency="receiveTrasnferInfoFormDifferentCurrency"
@@ -27,17 +28,19 @@
     :debit-account="choosenDebitAccount"
     :credit-account="choosenCreditAccount"
     @close-transfer-exchange-rate="closeTransferExchangeRate"
-    @submit-transfer-with-different-currency="sendTransferWithDifferentCurrency"
+    @submit-transfer-with-different-currency="receiveDataFromExchangeRate"
   />
 
-  <TransferRecent
+  <TransferTransactions
     class="transfer__recent"
     :date="'today'"
     :transfers-list="transfersStore.transfersTodaySorted"
+    @edit-transaction-initiated="editTransactionInitiated"
   />
-  <TransferRecent
+  <TransferTransactions
     :date="'yesterday'"
     :transfers-list="transfersStore.transfersYesterdaySorted"
+    @edit-transaction-initiated="editTransactionInitiated"
   />
 
   <router-link
@@ -46,6 +49,15 @@
   >
     HISTORY
   </router-link>
+
+  <EditTransferWindow
+    v-if="isShowEditTransferWindow"
+    :edit-debit-account-index="editDebitAccountIndex"
+    :edit-credit-account-index="editCreditAccountIndex"
+    @close-edit-transfer-window="toggleIsShowEditTransferWindow(false)"
+    @change-edit-choosen-credit-account-index="changeEditChoosenCreditAccountIndex"
+    @change-edit-choosen-debit-account-index="changeEditChoosenDebitAccountIndex"
+  />
 </template>
 <script lang="ts" setup>
 import TopNavbar from "@/components/navigation/TopNavbar.vue"
@@ -57,8 +69,16 @@ import { useAccountsStore } from "@/stores/accounts"
 import { ref, computed, reactive } from "vue"
 import { useTransfersStore } from "@/stores/transfers"
 import type { TransferInfoForm } from "@/components/accounts/transfer/TransferForm.vue"
-import TransferRecent from "@/components/accounts/transfer/TransferRecent.vue"
+import TransferTransactions from "@/components/accounts/transfer/TransferTransactions.vue"
 import TransferExchangeRate from "@/components/accounts/transfer/TransferExchangeRate.vue"
+import EditTransferWindow from "@/components/accounts/transfer/EditTransferWindow.vue"
+import type { TransferData, TransferDataWithDifferentCurrency } from "@/stores/transfers"
+import type {
+  AccountsWithDifferentCurrencyTransfer,
+  InfoInputData
+} from "@/components/accounts/transfer/interfaces.transfer"
+
+type TransferType = TransferData | TransferDataWithDifferentCurrency
 
 const links: NavTopPropLinks[] = [
   { icon: "fa-solid fa-credit-card", linkName: "accounts" },
@@ -80,6 +100,14 @@ const transfersStore = useTransfersStore()
 
 const choosenDebitAccountIndex = ref(0)
 const choosenCreditAccountIndex = ref(1)
+const isShowEditTransferWindow = ref<boolean>(false)
+const infoInputData = ref<InfoInputData>({
+  isShowTextInput: false,
+  debitAmount: null,
+  creditAmount: null,
+  debitCurrency: "",
+  creditCurrency: ""
+})
 
 const transferInfoDifferentCurrency = reactive<TransferInfoDifferentCurrency>({
   timestamp: 0,
@@ -156,22 +184,59 @@ const receiveTrasnferInfoFormDifferentCurrency = (transferInfoFormDifferentCurre
   transferInfoDifferentCurrency.currencyCredit = choosenCreditAccount.value.currency
 }
 
-const sendTransferWithDifferentCurrency = (data: { debitAmount: number; creditAmount: number }) => {
-  accountsStore.transferWithDifferentCurrency(
-    choosenDebitAccountIndex.value,
-    choosenCreditAccountIndex.value,
-    data.debitAmount,
-    data.creditAmount
-  )
+const receiveDataFromExchangeRate = (submittedData: AccountsWithDifferentCurrencyTransfer) => {
+  infoInputData.value.isShowTextInput = true
+  infoInputData.value.creditAmount = submittedData.creditAmount
+  infoInputData.value.creditCurrency = submittedData.creditCurrency
+  infoInputData.value.debitAmount = submittedData.debitAmount
+  infoInputData.value.debitCurrency = submittedData.debitCurrency
+}
 
-  const transferWithDifferentCurrency = {
-    ...transferInfoDifferentCurrency,
-    ...data,
-    currencyDebit: choosenDebitAccount.value.currency,
-    currencyCredit: choosenCreditAccount.value.currency
+// const sendTransferWithDifferentCurrency = (data: { debitAmount: number; creditAmount: number }) => {
+//   accountsStore.transferWithDifferentCurrency(
+//     choosenDebitAccountIndex.value,
+//     choosenCreditAccountIndex.value,
+//     data.debitAmount,
+//     data.creditAmount
+//   )
+
+//   const transferWithDifferentCurrency = {
+//     ...transferInfoDifferentCurrency,
+//     ...data,
+//     currencyDebit: choosenDebitAccount.value.currency,
+//     currencyCredit: choosenCreditAccount.value.currency
+//   }
+
+//   transfersStore.addToTransfers(transferWithDifferentCurrency)
+// }
+
+//EditTransferWindow
+const toggleIsShowEditTransferWindow = (value: boolean) => {
+  isShowEditTransferWindow.value = value
+}
+
+const editTransactionInitiated = (transfer: TransferType) => {
+  const debitItem = accountsStore.accounts.find((item) => item.title === transfer.debitTitle)
+  const creditItem = accountsStore.accounts.find((item) => item.title === transfer.creditTitle)
+
+  if (debitItem && creditItem) {
+    editDebitAccountIndex.value = accountsStore.accounts.indexOf(debitItem)
+    editCreditAccountIndex.value = accountsStore.accounts.indexOf(creditItem)
   }
 
-  transfersStore.addToTransfers(transferWithDifferentCurrency)
+  toggleIsShowEditTransferWindow(true)
+}
+
+const editDebitAccountIndex = ref<number>(0)
+const editCreditAccountIndex = ref<number>(0)
+
+// Change indexes to pass to EditTransferWindow as props
+const changeEditChoosenDebitAccountIndex = (index: number) => {
+  editDebitAccountIndex.value = index
+}
+
+const changeEditChoosenCreditAccountIndex = (index: number) => {
+  editCreditAccountIndex.value = index
 }
 </script>
 <style lang="css" scoped>

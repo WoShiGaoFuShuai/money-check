@@ -17,13 +17,24 @@
       v-else
       class="recent__transfers-wrapper"
     >
-      <TransferListItems :transfers-list="props.transfersList" />
+      <TransferTransactionItem
+        v-for="transfer in props.transfersList"
+        :key="transfer.timestamp"
+        :transfer="transfer"
+        @transaction-item-click="editTransactionInitiated"
+      />
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import type { TransferData, TransferDataWithDifferentCurrency } from "@/stores/transfers"
-import TransferListItems from "@/components/shared/TransferListItems.vue"
+import TransferTransactionItem from "@/components/accounts/transfer/TransferTransactionItem.vue"
+
+const editTransactionInitiated = (
+  transferClicked: TransferData | TransferDataWithDifferentCurrency
+) => {
+  emit("editTransactionInitiated", transferClicked)
+}
 
 type TransfersArray = (TransferData | TransferDataWithDifferentCurrency)[]
 
@@ -37,6 +48,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const emit = defineEmits(["editTransactionInitiated"])
 </script>
 <style lang="css" scoped>
 .recent__date {

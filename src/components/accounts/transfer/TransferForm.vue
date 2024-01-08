@@ -25,20 +25,37 @@
     </div>
 
     <div class="transfer__form-input__wrapper input__wrapper--bottom">
-      <input
-        id="amount"
-        v-model="amount"
-        class="transfer__form-input transfer__form-input--last"
-        type="number"
-        name="amount"
-        placeholder="Amount"
-        required
-        role="amountInput"
-        @focus="openExchangeRate"
-      />
+      <template v-if="!props.infoInputData.isShowTextInput">
+        <input
+          id="amount"
+          v-model="amount"
+          class="transfer__form-input transfer__form-input--last"
+          type="number"
+          name="amount"
+          placeholder="Amount"
+          required
+          role="amountInput"
+          @focus="openExchangeRate"
+        />
+      </template>
+      <template v-else>
+        <input
+          id="amountDifferentCurrency"
+          v-model="amountDifferentCurrencyComputed"
+          class="transfer__form-input transfer__form-input--last"
+          type="text"
+          name="amount"
+          placeholder="Amount"
+          required
+          role="amountDifferentCurrency"
+          readonly
+        />
+      </template>
+
       <button
         class="transfer__form-btn"
         role="submitButton"
+        type="submit"
       >
         <font-awesome-icon icon="fa-solid fa-check" />
       </button>
@@ -47,6 +64,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, ref, onMounted } from "vue"
+import type { InfoInputData } from "@/components/accounts/transfer/interfaces.transfer"
 
 export interface TransferInfoForm {
   timestamp: number
@@ -64,6 +82,10 @@ const emit = defineEmits([
 const props = defineProps({
   isSameCurrency: {
     type: Boolean,
+    required: true
+  },
+  infoInputData: {
+    type: Object as () => InfoInputData,
     required: true
   }
 })
@@ -85,6 +107,12 @@ const todayDate = computed(() => {
 })
 
 const amount = ref(null)
+const amountDifferentCurrencyComputed = computed(() => {
+  if (props.infoInputData.isShowTextInput) {
+    return `${props.infoInputData.debitAmount} ${props.infoInputData.debitCurrency} → ${props.infoInputData.creditAmount} ${props.infoInputData.creditCurrency}`
+  }
+  return ""
+})
 const note = ref("")
 const dateInput = ref("")
 

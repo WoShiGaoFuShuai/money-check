@@ -1,16 +1,15 @@
 <template>
   <div
-    v-for="transfer in props.transfersList"
-    :key="transfer.timestamp"
     class="recent__item"
     data-testId="transfer__item"
+    @click="handleClick(props.transfer)"
   >
     <div class="recent__item-left">
       <div>
         <span
           data-testId="transfer__debit"
           class="recent__item-title"
-          >{{ transfer.debitTitle }}</span
+          >{{ props.transfer.debitTitle }}</span
         >
         <font-awesome-icon
           icon="fa-solid fa-arrow-right-long"
@@ -19,18 +18,18 @@
         <span
           data-testId="transfer__credit"
           class="recent__item-title"
-          >{{ transfer.creditTitle }}</span
+          >{{ props.transfer.creditTitle }}</span
         >
       </div>
 
       <div data-testId="transfer__dayLabel">
-        {{ getDayLabel(transfer.timestamp) }}
+        {{ getDayLabel(props.transfer.timestamp) }}
       </div>
       <p
-        v-if="transfer.note !== ''"
+        v-if="props.transfer.note !== ''"
         data-testId="transfer__note"
       >
-        {{ transfer.note }}
+        {{ props.transfer.note }}
       </p>
     </div>
 
@@ -43,25 +42,32 @@
     </div>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { getDayLabel } from "@/helpers/getDayLabel"
 import type { TransferData, TransferDataWithDifferentCurrency } from "@/stores/transfers"
 
-type TransfersArray = (TransferData | TransferDataWithDifferentCurrency)[]
+type TransferType = TransferData | TransferDataWithDifferentCurrency
 
 const props = defineProps({
-  transfersList: {
-    type: Array as () => TransfersArray,
+  transfer: {
+    type: Object as () => TransferType,
     required: true
   }
 })
 
-const getAmount = (transfer: TransferData | TransferDataWithDifferentCurrency) => {
+const emit = defineEmits(["transactionItemClick"])
+
+const getAmount = (transfer: TransferType) => {
   if ("amount" in transfer) {
     return `${transfer.amount} ${transfer.currency}`
   } else {
     return `${transfer.debitAmount} ${transfer.currencyDebit}  (${transfer.creditAmount} ${transfer.currencyCredit})`
   }
+}
+
+const handleClick = (transferClicked: TransferType) => {
+  emit("transactionItemClick", transferClicked)
 }
 </script>
 <style lang="css" scoped>
