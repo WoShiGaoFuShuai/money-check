@@ -45,9 +45,7 @@
 
 <script lang="ts" setup>
 import { getDayLabel } from "@/helpers/getDayLabel"
-import type { TransferData, TransferDataWithDifferentCurrency } from "@/stores/transfers"
-
-type TransferType = TransferData | TransferDataWithDifferentCurrency
+import type { TransferType } from "@/stores/transfers"
 
 const props = defineProps({
   transfer: {

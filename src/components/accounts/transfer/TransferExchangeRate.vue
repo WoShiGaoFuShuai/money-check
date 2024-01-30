@@ -161,8 +161,6 @@ const handleSubmit = () => {
     creditCurrency: props.creditAccount.currency
   }
 
-  console.log("exchangeRate", dataDebitCredit)
-
   emit("submitTransferWithDifferentCurrency", dataDebitCredit)
   emit("closeTransferExchangeRate")
 }

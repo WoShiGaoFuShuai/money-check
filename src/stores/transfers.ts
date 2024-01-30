@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 type MonthName = string
 type TransfersArray = (TransferData | TransferDataWithDifferentCurrency)[]
+export type TransferType = TransferData | TransferDataWithDifferentCurrency
 
 export interface TransferData {
   timestamp: number
@@ -28,15 +29,26 @@ export const useTransfersStore = defineStore("transfers", {
   state: () => ({
     transfers: [
       {
-        amount: 1,
-        creditTitle: "acc2",
+        amount: 5,
+        creditTitle: "acc5",
         debitTitle: "acc1",
-        note: "",
+        note: "check",
         timestamp: Date.now(),
         createdTime: Date.now(),
-        currency: "Y"
+        currency: "Rp"
       },
 
+      {
+        timestamp: Date.now(),
+        note: "different",
+        debitAmount: 1,
+        creditAmount: 10,
+        debitTitle: "acc1",
+        creditTitle: "acc3",
+        createdTime: Date.now(),
+        currencyDebit: "Rp",
+        currencyCredit: "€"
+      },
       {
         amount: 2,
         creditTitle: "acc3",
@@ -64,11 +76,25 @@ export const useTransfersStore = defineStore("transfers", {
         createdTime: Date.now() - 4 * 30 * 24 * 60 * 60 * 1000,
         currency: "Y"
       }
-    ] as TransfersArray
+    ] as TransfersArray,
+    editTransfer: [] as TransfersArray
   }),
   actions: {
     addToTransfers(value: TransferData | TransferDataWithDifferentCurrency) {
       this.transfers.push(value)
+    },
+    addToEditTransfer(value: TransferType) {
+      if (this.editTransfer.length) {
+        this.editTransfer = []
+      }
+      this.editTransfer.push(value)
+    },
+    deleteTransfer(index: number) {
+      console.log("deleteTransfer in transfer store", index)
+      this.transfers.splice(index, 1)
+    },
+    clearEditTransfer() {
+      this.editTransfer = []
     }
   },
   getters: {

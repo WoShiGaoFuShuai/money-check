@@ -43,7 +43,7 @@ const currentMonthYear = computed(() => {
 })
 
 onMounted(() => {
-  selectedItem.value = currentMonthYear.value
+  // selectedItem.value = currentMonthYear.value
 })
 
 watch(selectedItem, () => {

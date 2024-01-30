@@ -16,6 +16,7 @@
   />
 
   <TransferForm
+    :mode="modeForm.DEFAULT"
     :is-same-currency="isSameCurrency"
     :info-input-data="infoInputData"
     @show-exchange-rate="showExchangeRate"
@@ -52,11 +53,14 @@
 
   <EditTransferWindow
     v-if="isShowEditTransferWindow"
+    :info-input-data="infoInputData"
     :edit-debit-account-index="editDebitAccountIndex"
     :edit-credit-account-index="editCreditAccountIndex"
     @close-edit-transfer-window="toggleIsShowEditTransferWindow(false)"
     @change-edit-choosen-credit-account-index="changeEditChoosenCreditAccountIndex"
     @change-edit-choosen-debit-account-index="changeEditChoosenDebitAccountIndex"
+    @reset-info-input-data="resetInfoInputData"
+    @submit-transfer-with-different-currency="receiveDataFromExchangeRate"
   />
 </template>
 <script lang="ts" setup>
@@ -66,33 +70,32 @@ import TransferAccount from "@/components/accounts/transfer/TransferAccount.vue"
 import TransferForm from "@/components/accounts/transfer/TransferForm.vue"
 import type { NavTopPropLinks } from "@/views/AccountsView.vue"
 import { useAccountsStore } from "@/stores/accounts"
-import { ref, computed, reactive } from "vue"
+import { ref, computed } from "vue"
 import { useTransfersStore } from "@/stores/transfers"
 import type { TransferInfoForm } from "@/components/accounts/transfer/TransferForm.vue"
 import TransferTransactions from "@/components/accounts/transfer/TransferTransactions.vue"
 import TransferExchangeRate from "@/components/accounts/transfer/TransferExchangeRate.vue"
 import EditTransferWindow from "@/components/accounts/transfer/EditTransferWindow.vue"
-import type { TransferData, TransferDataWithDifferentCurrency } from "@/stores/transfers"
+import type { TransferType } from "@/stores/transfers"
 import type {
   AccountsWithDifferentCurrencyTransfer,
   InfoInputData
 } from "@/components/accounts/transfer/interfaces.transfer"
-
-type TransferType = TransferData | TransferDataWithDifferentCurrency
+import { modeForm } from "@/components/accounts/transfer/enums.transfer"
 
 const links: NavTopPropLinks[] = [
   { icon: "fa-solid fa-credit-card", linkName: "accounts" },
   { icon: "fa-solid fa-repeat", linkName: "transfers" }
 ]
 
-export interface TransferInfoDifferentCurrency {
+export interface TransferInfoFormDifferentCurrency {
   timestamp: number
   note: string
   createdTime: number
-  debitTitle: string
-  creditTitle: string
-  currencyDebit: string
-  currencyCredit: string
+  debitAmount: number
+  debitCurrency: string
+  creditAmount: number
+  creditCurrency: string
 }
 
 const accountsStore = useAccountsStore()
@@ -109,14 +112,22 @@ const infoInputData = ref<InfoInputData>({
   creditCurrency: ""
 })
 
-const transferInfoDifferentCurrency = reactive<TransferInfoDifferentCurrency>({
+const resetInfoInputData = () => {
+  infoInputData.value.isShowTextInput = false
+  infoInputData.value.debitAmount = null
+  infoInputData.value.creditAmount = null
+  infoInputData.value.debitCurrency = ""
+  infoInputData.value.creditCurrency = ""
+}
+
+const transferInfoDifferentCurrency = ref<TransferInfoFormDifferentCurrency>({
   timestamp: 0,
   note: "",
   createdTime: 0,
-  debitTitle: "",
-  creditTitle: "",
-  currencyCredit: "",
-  currencyDebit: ""
+  debitAmount: 0,
+  debitCurrency: "",
+  creditAmount: 0,
+  creditCurrency: ""
 })
 
 const changeChoosenDebitAccountIndex = (index: number) => {
@@ -170,18 +181,18 @@ const closeTransferExchangeRate = () => {
 }
 
 //receiveTrasnferInfoFormDifferentCurrency
-const receiveTrasnferInfoFormDifferentCurrency = (transferInfoFormDifferentCurrency: {
-  timestamp: number
-  note: string
-  createdTime: number
-}) => {
-  transferInfoDifferentCurrency.timestamp = transferInfoFormDifferentCurrency.timestamp
-  transferInfoDifferentCurrency.note = transferInfoFormDifferentCurrency.note
-  transferInfoDifferentCurrency.createdTime = transferInfoFormDifferentCurrency.createdTime
-  transferInfoDifferentCurrency.debitTitle = choosenDebitAccount.value.title
-  transferInfoDifferentCurrency.creditTitle = choosenCreditAccount.value.title
-  transferInfoDifferentCurrency.currencyDebit = choosenDebitAccount.value.currency
-  transferInfoDifferentCurrency.currencyCredit = choosenCreditAccount.value.currency
+const receiveTrasnferInfoFormDifferentCurrency = (
+  receivedInfoForm: TransferInfoFormDifferentCurrency
+) => {
+  transferInfoDifferentCurrency.value.timestamp = receivedInfoForm.timestamp
+  transferInfoDifferentCurrency.value.note = receivedInfoForm.note
+  transferInfoDifferentCurrency.value.createdTime = receivedInfoForm.createdTime
+  transferInfoDifferentCurrency.value.debitAmount = receivedInfoForm.debitAmount
+  transferInfoDifferentCurrency.value.debitCurrency = receivedInfoForm.debitCurrency
+  transferInfoDifferentCurrency.value.creditAmount = receivedInfoForm.creditAmount
+  transferInfoDifferentCurrency.value.creditCurrency = receivedInfoForm.creditCurrency
+
+  submitTransferWithDifferentCurrency()
 }
 
 const receiveDataFromExchangeRate = (submittedData: AccountsWithDifferentCurrencyTransfer) => {
@@ -192,23 +203,25 @@ const receiveDataFromExchangeRate = (submittedData: AccountsWithDifferentCurrenc
   infoInputData.value.debitCurrency = submittedData.debitCurrency
 }
 
-// const sendTransferWithDifferentCurrency = (data: { debitAmount: number; creditAmount: number }) => {
-//   accountsStore.transferWithDifferentCurrency(
-//     choosenDebitAccountIndex.value,
-//     choosenCreditAccountIndex.value,
-//     data.debitAmount,
-//     data.creditAmount
-//   )
+const submitTransferWithDifferentCurrency = () => {
+  accountsStore.transferWithDifferentCurrency(
+    choosenDebitAccountIndex.value,
+    choosenCreditAccountIndex.value,
+    transferInfoDifferentCurrency.value.debitAmount,
+    transferInfoDifferentCurrency.value.creditAmount
+  )
 
-//   const transferWithDifferentCurrency = {
-//     ...transferInfoDifferentCurrency,
-//     ...data,
-//     currencyDebit: choosenDebitAccount.value.currency,
-//     currencyCredit: choosenCreditAccount.value.currency
-//   }
+  const transferWithDifferentCurrency = {
+    ...transferInfoDifferentCurrency.value,
+    currencyDebit: transferInfoDifferentCurrency.value.debitCurrency,
+    currencyCredit: transferInfoDifferentCurrency.value.creditCurrency,
+    debitTitle: choosenDebitAccount.value.title,
+    creditTitle: choosenCreditAccount.value.title
+  }
 
-//   transfersStore.addToTransfers(transferWithDifferentCurrency)
-// }
+  transfersStore.addToTransfers(transferWithDifferentCurrency)
+  resetInfoInputData()
+}
 
 //EditTransferWindow
 const toggleIsShowEditTransferWindow = (value: boolean) => {
@@ -222,6 +235,17 @@ const editTransactionInitiated = (transfer: TransferType) => {
   if (debitItem && creditItem) {
     editDebitAccountIndex.value = accountsStore.accounts.indexOf(debitItem)
     editCreditAccountIndex.value = accountsStore.accounts.indexOf(creditItem)
+  }
+
+  transfersStore.addToEditTransfer(transfer)
+
+  // CHECK IF THE TRANSFER IS WITH DIFFERENT CURRENCY
+  if ("creditAmount" in transfer) {
+    infoInputData.value.isShowTextInput = true
+    infoInputData.value.debitAmount = transfer.debitAmount
+    infoInputData.value.creditAmount = transfer.creditAmount
+    infoInputData.value.debitCurrency = transfer.currencyDebit
+    infoInputData.value.creditCurrency = transfer.currencyCredit
   }
 
   toggleIsShowEditTransferWindow(true)

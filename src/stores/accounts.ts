@@ -35,7 +35,8 @@ export const useAccountsStore = defineStore("accounts", {
       { title: "acc1", sum: 5, currency: "Rp", active: true },
       { title: "acc2", sum: 10, currency: "$", active: false },
       { title: "acc3", sum: 100, currency: "€", active: false },
-      { title: "acc4", sum: 1000, currency: "¥", active: false }
+      { title: "acc4", sum: 1000, currency: "¥", active: false },
+      { title: "acc5", sum: 20, currency: "Rp", active: false }
     ] as Account[],
     currencies: [
       { currency: "United States Dollar", symbol: "$" },
@@ -159,6 +160,27 @@ export const useAccountsStore = defineStore("accounts", {
       this.accounts[indexDebit].sum = performOperation(this.accounts[indexDebit].sum, amount, "-")
       this.accounts[indexCredit].sum = performOperation(this.accounts[indexCredit].sum, amount, "+")
     },
+    undoTransfer(indexDebit: number, indexCredit: number, amount: number) {
+      this.accounts[indexDebit].sum = performOperation(this.accounts[indexDebit].sum, amount, "+")
+      this.accounts[indexCredit].sum = performOperation(this.accounts[indexCredit].sum, amount, "-")
+    },
+    undoTransferWithDifferentCurrency(
+      indexDebit: number,
+      debitAmount: number,
+      indexCredit: number,
+      creditAmount: number
+    ) {
+      this.accounts[indexDebit].sum = performOperation(
+        this.accounts[indexDebit].sum,
+        debitAmount,
+        "+"
+      )
+      this.accounts[indexCredit].sum = performOperation(
+        this.accounts[indexCredit].sum,
+        creditAmount,
+        "-"
+      )
+    },
     transferWithDifferentCurrency(
       indexDebit: number,
       indexCredit: number,
@@ -170,6 +192,8 @@ export const useAccountsStore = defineStore("accounts", {
         debitAmount,
         "-"
       )
+
+      console.log("this.accounts[indexCredit].sum,", this.accounts[indexCredit].sum)
 
       this.accounts[indexCredit].sum = performOperation(
         this.accounts[indexCredit].sum,
@@ -225,32 +249,6 @@ export const useAccountsStore = defineStore("accounts", {
         )
       }
     }
-
-    // changeSumEditedTransactionEarn(
-    //   accOldName: string,
-    //   accOldSum: number,
-    //   accNewName: string,
-    //   accNewSum: number
-    // ) {
-    //   const oldAccount = this.accounts.find((item) => item.title === accOldName)
-    //   const newAccount = this.accounts.find((item) => item.title === accNewName)
-
-    //   if (oldAccount && newAccount) {
-    //     const oldAccountIndex = this.accounts.indexOf(oldAccount)
-    //     const newAccountIndex = this.accounts.indexOf(newAccount)
-
-    //     this.accounts[oldAccountIndex].sum = performOperation(
-    //       this.accounts[oldAccountIndex].sum,
-    //       accOldSum,
-    //       "-"
-    //     )
-    //     this.accounts[newAccountIndex].sum = performOperation(
-    //       this.accounts[newAccountIndex].sum,
-    //       accNewSum,
-    //       "+"
-    //     )
-    //   }
-    // }
   },
 
   getters: {

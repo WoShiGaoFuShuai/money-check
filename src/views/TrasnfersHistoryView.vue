@@ -31,9 +31,7 @@ import EditTransferWindow from "@/components/accounts/transfer/EditTransferWindo
 import { useTransfersStore } from "@/stores/transfers"
 import { useAccountsStore } from "@/stores/accounts"
 import { ref, type Ref, computed } from "vue"
-import type { TransferData, TransferDataWithDifferentCurrency } from "@/stores/transfers"
-
-type TransferType = TransferData | TransferDataWithDifferentCurrency
+import type { TransferType } from "@/stores/transfers"
 
 const transfersStore = useTransfersStore()
 const accountsStore = useAccountsStore()
@@ -74,6 +72,7 @@ const editTransactionInitiated = (transfer: TransferType) => {
     editCreditAccountIndex.value = accountsStore.accounts.indexOf(creditItem)
   }
 
+  transfersStore.addToEditTransfer(transfer)
   toggleIsShowEditTransferWindow(true)
 }
 </script>
