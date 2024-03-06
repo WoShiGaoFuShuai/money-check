@@ -8,3 +8,13 @@ export interface AccountsWithDifferentCurrencyTransfer {
 export interface InfoInputData extends AccountsWithDifferentCurrencyTransfer {
   isShowTextInput: boolean
 }
+
+export interface TransferInfoDifferentCurrency {
+  timestamp: number
+  note: string
+  createdTime: number
+  debitTitle: string
+  creditTitle: string
+  currencyCredit: string
+  currencyDebit: string
+}

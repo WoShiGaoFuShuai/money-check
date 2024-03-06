@@ -18,6 +18,7 @@
         v-for="icon in props.rightIcons"
         :key="icon.icon"
         class="right-iton__item"
+        :style="{ 'background-color': icon.bg }"
         data-testId="rightIcon"
       >
         <font-awesome-icon
@@ -34,7 +35,13 @@
 <script setup lang="ts">
 const props = defineProps({
   rightIcons: {
-    type: Array as () => { icon: string; handler?: () => void; label?: string }[],
+    type: Array as () => {
+      icon: string
+      handler?: () => void
+      label?: string
+      path?: string
+      bg?: string
+    }[],
     required: false,
     default() {
       return []

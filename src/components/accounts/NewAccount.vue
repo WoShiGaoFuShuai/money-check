@@ -12,6 +12,13 @@
       @accounts-store-add-new-acc="addNewAccount"
     />
 
+    <template v-if="errorMsg.length">
+      <AppError
+        class="error__wrapper"
+        :error="errorMsg"
+      />
+    </template>
+
     <h3 class="new__account-text">
       Can't find the currency you need?
       <br />
@@ -28,7 +35,9 @@
 import TopNavbar from "@/components/navigation/TopNavbar.vue"
 import NewAccountForm from "@/components/accounts/NewAccountForm.vue"
 import { useAccountsStore } from "@/stores/accounts"
+import AppError from "@/components/shared/AppError.vue"
 import type { Account } from "@/stores/accounts"
+import { ref } from "vue"
 
 const emit = defineEmits(["hideNewAccountModal"])
 
@@ -40,8 +49,18 @@ const hideNewAccountModal = () => {
 
 //add new account
 const addNewAccount = (newAccount: Account) => {
-  accountsStore.addNewAccount(newAccount)
+  try {
+    accountsStore.addNewAccount(newAccount)
+    errorMsg.value = ""
+    hideNewAccountModal()
+  } catch (error) {
+    if (error instanceof Error) {
+      errorMsg.value = error.message
+    }
+  }
 }
+
+const errorMsg = ref<string>("")
 </script>
 <style lang="css" scoped>
 .newAccount__wrapper {
@@ -63,5 +82,9 @@ const addNewAccount = (newAccount: Account) => {
 
 .link {
   text-decoration: none;
+}
+
+.error__wrapper {
+  margin-top: 16px;
 }
 </style>

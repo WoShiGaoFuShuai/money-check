@@ -4,10 +4,13 @@
     :title="'History'"
   />
 
-  <HistorySelect
-    :all-month="activeStore.allMonths"
-    @new-selected-item="changeSelectedItem"
-  />
+  <div class="report__wrapper-selects">
+    <HistorySelect
+      class="history__select"
+      :items="activeStore.allMonths"
+      @new-selected-item="changeSelectedItem"
+    />
+  </div>
 
   <SpendCardContainer
     :editing-route-name="editingRouteName"
@@ -25,6 +28,7 @@ import { useSpendStore } from "@/stores/spend"
 import { useEarnStore } from "@/stores/earn"
 import { previousRoute } from "@/router/index"
 
+//SAME WITH ReportView
 const spendStore = useSpendStore()
 const earnStore = useEarnStore()
 
@@ -52,4 +56,10 @@ const changeSelectedItem = (value: string) => {
   selectedMonth.value = value
 }
 </script>
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+.report__wrapper-selects {
+  background-color: var(--blue-secondary);
+  padding-top: 54px;
+  padding-bottom: 16px;
+}
+</style>

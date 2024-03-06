@@ -1,6 +1,6 @@
 <template>
   <div class="confirmation__del">
-    <p class="confirmation__del-text">Delete the transaction?</p>
+    <p class="confirmation__del-text">{{ props.text }}</p>
     <div class="confirmation__del-buttons__wrapper">
       <button
         class="confirmation__del-buttons__item"
@@ -21,6 +21,13 @@
 </template>
 <script lang="ts" setup>
 const emit = defineEmits(["confirm", "cancel"])
+
+const props = defineProps({
+  text: {
+    type: String,
+    required: true
+  }
+})
 
 const confirm = () => {
   emit("confirm")

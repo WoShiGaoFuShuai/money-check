@@ -50,12 +50,7 @@
       </div>
     </div>
 
-    <div
-      class="error"
-      role="error"
-    >
-      Please fill out all inputs
-    </div>
+    <AppError :error="errorMsg" />
 
     <div class="newAccount__button-wrapper">
       <font-awesome-icon
@@ -76,6 +71,7 @@
 </template>
 <script setup lang="ts">
 import NewAccountsCurrencySelect from "@/components/accounts/NewAccountsCurrencySelect.vue"
+import AppError from "@/components/shared/AppError.vue"
 import { ref } from "vue"
 import type { Currency } from "@/stores/accounts"
 
@@ -91,6 +87,7 @@ const props = defineProps({
 const accountNameInput = ref("")
 const accountBalanceInput = ref(0)
 const receivedCurrencySymbol = ref("")
+const errorMsg = ref<string>("")
 
 // change account balance + -
 const changeAccountBalance = () => {
@@ -117,16 +114,13 @@ const addNewAccount = () => {
       active: false
     }
     emit("accountsStoreAddNewAcc", newAccount)
-    // accountsStore.addNewAccount(newAccount)
 
     accountNameInput.value = ""
     accountBalanceInput.value = 0
     receivedCurrencySymbol.value = ""
-
-    emit("hideNewAccountModal")
+    errorMsg.value = ""
   } else {
-    const errorDiv = document.querySelector(".error") as HTMLElement
-    errorDiv.style.display = "block"
+    errorMsg.value = " Please fill out all inputs"
   }
 }
 </script>
@@ -189,10 +183,5 @@ const addNewAccount = () => {
 
 .btn__primary:first-child {
   margin-right: 16px;
-}
-
-.error {
-  display: none;
-  margin-top: 8px;
 }
 </style>

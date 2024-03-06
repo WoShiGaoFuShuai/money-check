@@ -1,5 +1,14 @@
 <template>
-  <TopNavbar :title="'Expenses'" />
+  <TopNavbar
+    :title="'Expenses'"
+    :right-icons="[{ icon: 'fa-solid fa-chart-pie', path: path, handler: navigateToPath }]"
+  >
+    <template #left-icons>
+      <router-link :to="{ name: 'categories', query: { from: Mode.EXPENSES } }">
+        <font-awesome-icon icon="fa-solid fa-list" />
+      </router-link>
+    </template>
+  </TopNavbar>
 
   <AppAccounts />
 
@@ -38,8 +47,16 @@ import ExpensesCategories from "@/components/expensesView/ExpensesCategories.vue
 import SpendCard from "@/components/spendCard/SpendCard.vue"
 import { useSpendStore } from "@/stores/spend"
 import { Mode } from "@/components/expensesView/enums"
+import { useRouter } from "vue-router"
 
 const spendStore = useSpendStore()
+
+const path = "total-report"
+const router = useRouter()
+
+const navigateToPath = () => {
+  router.push({ name: path })
+}
 </script>
 <style lang="css" scoped>
 .history__link {

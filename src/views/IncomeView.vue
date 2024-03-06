@@ -1,8 +1,15 @@
 <template>
   <TopNavbar
     :bg-color="getCSSVariableValue('--green-primary')"
+    :right-icons="[{ icon: 'fa-solid fa-chart-pie', path: path, handler: navigateToPath }]"
     :title="'Income'"
-  />
+  >
+    <template #left-icons>
+      <router-link :to="{ name: 'categories', query: { from: Mode.INCOME } }">
+        <font-awesome-icon icon="fa-solid fa-list" />
+      </router-link>
+    </template>
+  </TopNavbar>
 
   <AppAccounts />
 
@@ -41,11 +48,19 @@ import ExpensesCategories from "@/components/expensesView/ExpensesCategories.vue
 import SpendCard from "@/components/spendCard/SpendCard.vue"
 import { useEarnStore } from "@/stores/earn"
 import { Mode } from "@/components/expensesView/enums"
+import { useRouter } from "vue-router"
 
 const earnStore = useEarnStore()
+const router = useRouter()
 
 const getCSSVariableValue = (variableName: string) => {
   return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()
+}
+
+const path = "total-report"
+
+const navigateToPath = () => {
+  router.push({ name: path })
 }
 </script>
 <style lang="css" scoped>

@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 import type { SpendCardInfo } from "./accounts"
 import { useAccountsStore } from "./accounts"
 import { Mode } from "@/components/expensesView/enums"
+import type { NewCategory } from "@/components/category/category.types"
 
 type MonthName = string
 
@@ -11,42 +12,47 @@ export const useEarnStore = defineStore("earn", {
       {
         iconName: "fa-solid fa-piggy-bank",
         categoryName: "category EARN",
-        sum: 1,
+        sum: 111,
         timestamp: Date.now(),
-        account: "acc1",
-        currency: "$"
+        account: "acc5",
+        currency: "€",
+        color: "#fff000"
       },
       {
         iconName: "fa-solid fa-piggy-bank",
         categoryName: "EARN",
-        sum: 11,
+        sum: 222,
         timestamp: Date.now() - 86400000,
-        account: "acc1",
-        currency: "$"
+        account: "acc4",
+        currency: "Rp",
+        color: "#fff000"
       },
       {
         iconName: "fa-solid fa-piggy-bank",
         categoryName: "-1 month EARN",
-        sum: 1,
+        sum: 333,
         timestamp: Date.now() - 1 * 30 * 24 * 60 * 60 * 1000,
-        account: "acc1",
-        currency: "$"
+        account: "acc3",
+        currency: "$",
+        color: "#fff000"
       },
       {
         iconName: "fa-solid fa-piggy-bank",
         categoryName: "-2 monthEARN",
-        sum: 1,
+        sum: 444,
         timestamp: Date.now() - 2 * 30 * 24 * 60 * 60 * 1000,
         account: "acc1",
-        currency: "$"
+        currency: "¥",
+        color: "#fff000"
       },
       {
         iconName: "fa-solid fa-piggy-bank",
         categoryName: "-3 monthEARN",
-        sum: 1,
+        sum: 555,
         timestamp: Date.now() - 3 * 30 * 24 * 60 * 60 * 1000,
-        account: "acc1",
-        currency: "$"
+        account: "acc2",
+        currency: "$",
+        color: "#fff000"
       }
     ] as SpendCardInfo[]
   }),
@@ -75,6 +81,18 @@ export const useEarnStore = defineStore("earn", {
         Mode.INCOME
       )
       this.earn.splice(index, 1)
+    },
+
+    changeCategory(newCategory: NewCategory, nameToUpdate: string) {
+      const arraysToUpdate = this.earn.filter((item) => item.categoryName === nameToUpdate)
+
+      if (arraysToUpdate.length) {
+        arraysToUpdate.forEach((item) => {
+          item.iconName = newCategory.iconName
+          item.categoryName = newCategory.categoryName
+          item.color = newCategory.color
+        })
+      }
     }
   },
   getters: {
@@ -99,6 +117,7 @@ export const useEarnStore = defineStore("earn", {
       )
       return yesterdayEarn.sort((a, b) => b.timestamp - a.timestamp)
     },
+    //SAME
     allMonths(state): MonthName[] {
       const monthsSet = new Set()
 

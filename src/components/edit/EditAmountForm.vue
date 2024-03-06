@@ -48,6 +48,7 @@ import AppError from "@/components/shared/AppError.vue"
 import { ref, computed, watch } from "vue"
 import type { SpendCardInfo } from "@/stores/accounts"
 import type { PropType } from "vue"
+import { performOperation } from "@/helpers/performOperation"
 
 const emit = defineEmits(["toggleEditAmountForm", "editAmountConfirm"])
 
@@ -69,7 +70,13 @@ const input = ref("")
 const error = ref("")
 
 const differeneAmount = computed(() => {
-  const result = (props.editItem?.sum ?? 0) - parseFloat(input.value)
+  let result
+  // IF STRING IS EMPTY WE
+  if (input.value === "") {
+    return ""
+  } else {
+    result = performOperation(props.editItem?.sum ?? 0, parseFloat(input.value), "-")
+  }
 
   if (result > 0) {
     return `${result} less`

@@ -150,6 +150,7 @@
 
   <ConfirmationDelete
     v-if="isShowConfirmation"
+    :text="'Delete the transaction?'"
     @cancel="isShowConfirmation = false"
     @confirm="confirmedDelTransaction"
   />

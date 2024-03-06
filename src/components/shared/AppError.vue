@@ -1,7 +1,7 @@
 <template>
   <div
     class="error__wrapper"
-    :style="{ 'margin-bottom': mb + 'px' }"
+    :style="{ 'margin-bottom': mb + 'px', 'margin-top': mt + 'px' }"
     data-testId="error__text"
   >
     {{ props.error }}
@@ -14,6 +14,11 @@ const props = defineProps({
     required: true
   },
   mb: {
+    type: Number as () => number,
+    required: false,
+    default: 0
+  },
+  mt: {
     type: Number as () => number,
     required: false,
     default: 0

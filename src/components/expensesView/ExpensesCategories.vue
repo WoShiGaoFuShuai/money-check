@@ -5,7 +5,7 @@
     data-testid="expenses__categoriesWrapper"
   >
     <div
-      v-for="(category, i) in categoriesStore.categoriesExpenses"
+      v-for="(category, i) in activeCategories"
       :key="i"
       class="category__item"
       data-testid="category__item"
@@ -15,6 +15,7 @@
         <font-awesome-icon
           class="category__item-icon__item"
           :icon="category.iconName"
+          :style="{ color: category.color }"
         />
       </div>
       <div class="category__item-title">{{ category.categoryName }}</div>
@@ -27,10 +28,7 @@ import { useAccountsStore } from "@/stores/accounts"
 import { useCalculatorStore } from "@/stores/calculator"
 import type { CategoryObject } from "@/stores/categories"
 import { Mode } from "@/components/expensesView/enums"
-
-const categoriesStore = useCategoriesStore()
-const accountsStore = useAccountsStore()
-const calculatorStore = useCalculatorStore()
+import { useRouter } from "vue-router"
 
 const props = defineProps({
   mode: {
@@ -39,6 +37,17 @@ const props = defineProps({
     default: () => "expenses"
   }
 })
+
+const categoriesStore = useCategoriesStore()
+const accountsStore = useAccountsStore()
+const calculatorStore = useCalculatorStore()
+
+const activeCategories =
+  props.mode === Mode.EXPENSES
+    ? categoriesStore.categoriesExpenses
+    : categoriesStore.categoriesIncome
+
+const router = useRouter()
 
 const handleClick = (category: CategoryObject) => {
   if (category.categoryName !== "All Categories") {
@@ -57,6 +66,8 @@ const handleClick = (category: CategoryObject) => {
     } else {
       display?.classList.add("display-error")
     }
+  } else if (category.categoryName === "All Categories") {
+    router.push({ name: "categories", query: { from: props.mode } })
   }
 }
 </script>

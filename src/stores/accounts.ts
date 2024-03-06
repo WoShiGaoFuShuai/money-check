@@ -27,6 +27,7 @@ export interface SpendCardInfo {
   timestamp: number
   account: string
   currency: string | null
+  color: string
 }
 
 export const useAccountsStore = defineStore("accounts", {
@@ -139,7 +140,13 @@ export const useAccountsStore = defineStore("accounts", {
       this.currencies.splice(indexToEdit, 1, newCurrency)
     },
     addNewAccount(newAccount: Account) {
-      this.accounts.push(newAccount)
+      const accountExists = this.accounts.some((item) => item.title === newAccount.title)
+
+      if (accountExists) {
+        throw new Error("An account with this title already exists.")
+      } else {
+        this.accounts.push(newAccount)
+      }
     },
     editAccount(account: { title: string; sum: number; currency: string }, index: number) {
       const active = this.accounts[index].active
@@ -254,6 +261,13 @@ export const useAccountsStore = defineStore("accounts", {
   getters: {
     getterActiveAccount(state) {
       return state.accounts.find((acc) => acc.active) || null
+    },
+    getterAllTitles(state): string[] {
+      const uniqueTitles = new Set<string>()
+
+      state.accounts.forEach((acc) => uniqueTitles.add(acc.title))
+
+      return [...uniqueTitles] as string[]
     }
   }
 })

@@ -61,6 +61,11 @@ const routes = [
     path: "/editing-transaction/:timestamp?",
     name: "editing-transaction",
     component: () => import("@/views/EditingTransactionView.vue")
+  },
+  {
+    path: "/total-report",
+    name: "total-report",
+    component: () => import("@/views/ReportView.vue")
   }
 ]
 

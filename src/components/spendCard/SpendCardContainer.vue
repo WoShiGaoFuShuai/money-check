@@ -11,6 +11,7 @@
         <font-awesome-icon
           class="spendCard__item-category__icon"
           :icon="spendItem.iconName"
+          :style="{ color: spendItem.color }"
         />
       </div>
       <div class="spendCard__item-info">
@@ -50,6 +51,7 @@ const props = defineProps({
 <style lang="css" scoped>
 .router__link {
   text-decoration: none;
+  color: #000000;
 }
 .spendCard__item {
   display: flex;

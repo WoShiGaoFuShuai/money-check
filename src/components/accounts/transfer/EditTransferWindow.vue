@@ -60,7 +60,7 @@ import TransferExchangeRate from "@/components/accounts/transfer/TransferExchang
 import { useAccountsStore } from "@/stores/accounts"
 import { useTransfersStore } from "@/stores/transfers"
 import { computed, reactive, ref, onUnmounted } from "vue"
-// import type { TransferInfoDifferentCurrency } from "@/views/TransfersView.vue"
+import type { TransferInfoDifferentCurrency } from "@/components/accounts/transfer/interfaces.transfer"
 import { modeForm } from "@/components/accounts/transfer/enums.transfer"
 import type { InfoInputData } from "@/components/accounts/transfer/interfaces.transfer"
 import type {

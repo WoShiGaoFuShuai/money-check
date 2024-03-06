@@ -6,9 +6,9 @@
         class="history-select"
         role="history-select"
       >
-        <option value="">All Months</option>
+        <option value="">{{ props.title }}</option>
         <option
-          v-for="monthYear in props.allMonth"
+          v-for="monthYear in props.items"
           :key="monthYear"
           :value="monthYear"
         >
@@ -26,9 +26,14 @@ import type { Ref } from "vue"
 const selectedItem: Ref<string> = ref("")
 
 const props = defineProps({
-  allMonth: {
+  items: {
     type: Array as () => string[],
     required: true
+  },
+  title: {
+    type: String as () => string,
+    required: false,
+    default: () => "All Month"
   }
 })
 
@@ -53,11 +58,8 @@ watch(selectedItem, () => {
 
 <style lang="css" scoped>
 .history-select__wrapper {
-  padding-top: 54px;
-  padding-bottom: 16px;
   display: flex;
   justify-content: center;
-  background-color: var(--blue-secondary);
 }
 
 .history-select__block {
@@ -76,6 +78,7 @@ watch(selectedItem, () => {
   font-size: 16px;
   cursor: pointer;
   outline: none;
+  min-width: 150px;
 }
 
 .history-select option {
