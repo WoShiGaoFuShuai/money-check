@@ -18,7 +18,11 @@ export function performOperation(left: number, right: number, operator: string):
         return NaN
     }
   } catch (e) {
-    console.error("Error during calculation:", error.message)
+    if (e instanceof Error) {
+      console.error("Error during calculation:", e.message)
+    } else {
+      console.error("Error during calculation:", e)
+    }
     return NaN
   }
 }

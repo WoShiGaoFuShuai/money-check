@@ -75,7 +75,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  previousRoute.value = from.name
+  if (typeof from.name === "string") {
+    previousRoute.value = from.name
+  } else {
+    previousRoute.value = null
+  }
   next()
 })
 

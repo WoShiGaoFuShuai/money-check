@@ -9,7 +9,7 @@ export function createSpendCardInfo(categoryInfo: CategoryObject, num: number): 
     sum: num,
     ...categoryInfo,
     timestamp: Date.now(),
-    account: accountsStore.getterActiveAccount?.title || null,
+    account: accountsStore.getterActiveAccount?.title || "",
     currency: accountsStore.getterActiveAccount?.currency || null
   }
 }
