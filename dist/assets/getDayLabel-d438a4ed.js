@@ -1,0 +1,1 @@
+const s=n=>{const e=new Date,t=new Date(n);if(e.toDateString()===t.toDateString())return"Today";{const a=new Date(e);if(a.setDate(e.getDate()-1),a.toDateString()===t.toDateString())return"Yesterday";{const o=t.getDate(),r=t.toLocaleString("en-US",{month:"long"});return`${o} ${r}`}}};export{s as g};
