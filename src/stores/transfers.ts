@@ -132,6 +132,9 @@ export const useTransfersStore = defineStore("transfers", {
           }
         }
       })
+    },
+    deleteAllTransfersOfAccount(accTitle: string) {
+      this.transfers = this.transfers.filter(transfer => transfer.debitTitle !== accTitle && transfer.creditTitle !== accTitle )
     }
   },
   getters: {

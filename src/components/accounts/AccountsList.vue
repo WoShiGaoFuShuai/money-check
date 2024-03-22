@@ -52,6 +52,7 @@ import type { Account } from "@/stores/accounts"
 import { useAccountsStore } from "@/stores/accounts"
 import { useSpendStore } from "@/stores/spend"
 import { useEarnStore } from "@/stores/earn"
+import { useTransfersStore } from "@/stores/transfers"
 import ConfirmationDelete from "@/components/shared/ConfirmationDelete.vue"
 import { ref, computed } from "vue"
 
@@ -71,6 +72,7 @@ const props = defineProps({
 const accountsStore = useAccountsStore()
 const spendStore = useSpendStore()
 const earnStore = useEarnStore()
+const transfersStore = useTransfersStore()
 
 const isShowConfirmationDelete = ref<boolean>(false)
 const confirmationText = ref<string>("")
@@ -113,6 +115,7 @@ const confirmDeleteAccount = () => {
 
     spendStore.deleteAllSpendsOfAccount(currentAccountTitle)
     earnStore.deleteAllEarnsOfAccount(currentAccountTitle)
+    transfersStore.deleteAllTransfersOfAccount(currentAccountTitle)
     accountsStore.deleteAccount(accountIndex.value)
     resetAccIndexAndConfirmationText()
     toggleDeleteConfirmation()

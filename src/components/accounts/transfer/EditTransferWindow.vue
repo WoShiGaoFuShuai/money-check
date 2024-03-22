@@ -38,7 +38,7 @@
         @value-input-form="receiveValueInputForm"
         @value-note-form="receiveValueNoteForm"
         @value-date-form="receiveValueDateForm"
-        @delete-transaction="deleteTransaction"
+        @delete-transaction="toggleConfirmationDelete"
       />
       <!-- @submit-transfer="submitTransfer" -->
 
@@ -51,6 +51,13 @@
       />
     </div>
   </div>
+
+  <ConfirmationDelete 
+  v-if="isShowConfirmationDelete" 
+  :text="confirmationText"
+  @confirm="deleteTransaction"
+  @cancel="toggleConfirmationDelete"
+  />
 </template>
 <script setup lang="ts">
 import TopNavbar from "@/components/navigation/TopNavbar.vue"
@@ -69,6 +76,7 @@ import type {
   TransferDataWithDifferentCurrency
 } from "@/stores/transfers"
 import type { AccountsWithDifferentCurrencyTransfer } from "@/components/accounts/transfer/interfaces.transfer"
+import ConfirmationDelete from "@/components/shared/ConfirmationDelete.vue"
 
 //STORES
 const accountsStore = useAccountsStore()
@@ -131,6 +139,8 @@ const amountValueForm = ref<number>(0)
 const noteValueForm = ref<string>("")
 const dateValueForm = ref<string>("")
 const isShowErrorForm = ref<boolean>(false)
+const isShowConfirmationDelete = ref<boolean>(false)
+const confirmationText = "Transfer will be deleted, accounts' sums will be recalculated."
 
 //receiveTrasnferInfoFormDifferentCurrency
 const receiveTrasnferInfoFormDifferentCurrency = (transferInfoFormDifferentCurrency: {
@@ -388,6 +398,10 @@ const submitEditTransfer = () => {
       return
     }
   }
+}
+
+const toggleConfirmationDelete = () => {
+  isShowConfirmationDelete.value = !isShowConfirmationDelete.value
 }
 
 //Deleting transsaction
