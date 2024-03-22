@@ -120,7 +120,7 @@
   >
     <EditCategoriesList
       @toggle-edit-categories-list="toggleEditCategoriesList"
-      @choose-category-name="changeCategory"
+      @choose-category="changeCategory"
     />
   </div>
 
@@ -163,15 +163,13 @@ import EditDateCalendar from "@/components/edit/EditDateCalendar.vue"
 import ConfirmationDelete from "@/components/shared/ConfirmationDelete.vue"
 import type { PropType } from "vue"
 import { getDayLabel } from "@/helpers/getDayLabel"
-
 import { useAccountsStore } from "@/stores/accounts"
 import { useSpendStore } from "@/stores/spend"
 import { useEarnStore } from "@/stores/earn"
-
 import type { SpendCardInfo } from "@/stores/accounts"
 import { ref, watch } from "vue"
-
 import { useRouter, useRoute } from "vue-router"
+import type { CategoryObject } from "@/stores/categories"
 
 const emit = defineEmits(["changeAmount", "changeCategory", "changeAccount", "changeDate"])
 
@@ -227,8 +225,8 @@ const toggleEditCategoriesList = (shouldShow: boolean) => {
   isShowEditCategoriesList.value = shouldShow
 }
 
-const changeCategory = (categoryName: string) => {
-  emit("changeCategory", categoryName)
+const changeCategory = (category: CategoryObject) => {
+  emit("changeCategory", category)
   isShowEditCategoriesList.value = false
 }
 

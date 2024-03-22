@@ -33,16 +33,27 @@
             icon="fa-solid fa-trash"
             class="icon icon__del"
             role="deleteIcon"
-            @click="deleteAccount(index)"
+            @click="toggleDeleteConfirmation(index)"
           />
         </div>
       </li>
     </ul>
   </div>
+
+  <ConfirmationDelete
+    v-if="isShowConfirmationDelete"
+    :text="confirmationText"
+    @confirm="confirmDeleteAccount"
+    @cancel="cancelDeleteAccount"
+  />
 </template>
 <script setup lang="ts">
 import type { Account } from "@/stores/accounts"
 import { useAccountsStore } from "@/stores/accounts"
+import { useSpendStore } from "@/stores/spend"
+import { useEarnStore } from "@/stores/earn"
+import ConfirmationDelete from "@/components/shared/ConfirmationDelete.vue"
+import { ref, computed } from "vue"
 
 const emit = defineEmits(["showEditCurrentAccount"])
 
@@ -58,6 +69,12 @@ const props = defineProps({
 })
 
 const accountsStore = useAccountsStore()
+const spendStore = useSpendStore()
+const earnStore = useEarnStore()
+
+const isShowConfirmationDelete = ref<boolean>(false)
+const confirmationText = ref<string>("")
+const accountIndex = ref<number | null>(null)
 
 const showEditCurrentAccount = (sum: number, symbol: string, title: string, index: number) => {
   const accountToEdit = {
@@ -69,8 +86,42 @@ const showEditCurrentAccount = (sum: number, symbol: string, title: string, inde
   emit("showEditCurrentAccount", accountToEdit)
 }
 
-const deleteAccount = (i: number) => {
-  accountsStore.deleteAccount(i)
+const accountTitle = computed(() => {
+  if (typeof accountIndex.value === "number" && accountIndex.value !== null) {
+    return accountsStore.accounts[accountIndex.value].title
+  }
+
+  return ""
+})
+
+const toggleDeleteConfirmation = (i?: number) => {
+  if (typeof i === "number") {
+    accountIndex.value = i
+    confirmationText.value = `Account '${accountTitle.value}' will be deleted. All operations related to it will be deleted!`
+  }
+  isShowConfirmationDelete.value = !isShowConfirmationDelete.value
+}
+
+const resetAccIndexAndConfirmationText = () => {
+  confirmationText.value = ""
+  accountIndex.value = null
+}
+
+const confirmDeleteAccount = () => {
+  if (typeof accountIndex.value === "number") {
+    const currentAccountTitle = accountTitle.value
+
+    spendStore.deleteAllSpendsOfAccount(currentAccountTitle)
+    earnStore.deleteAllEarnsOfAccount(currentAccountTitle)
+    accountsStore.deleteAccount(accountIndex.value)
+    resetAccIndexAndConfirmationText()
+    toggleDeleteConfirmation()
+  }
+}
+
+const cancelDeleteAccount = () => {
+  resetAccIndexAndConfirmationText()
+  toggleDeleteConfirmation()
 }
 </script>
 <style lang="css" scoped>

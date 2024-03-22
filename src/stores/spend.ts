@@ -67,6 +67,11 @@ export const useSpendStore = defineStore("spend", {
       )
       this.spend.splice(index, 1)
     },
+    deleteAllSpendsOfAccount(accName: string) {
+      console.log(this.spend.filter((item) => item.account !== accName))
+
+      this.spend = this.spend.filter((item) => item.account !== accName)
+    },
     editSpend(newSpend: SpendCardInfo, index: number) {
       const accountsStore = useAccountsStore()
       accountsStore.changeSumEditedTransaction(
@@ -89,6 +94,17 @@ export const useSpendStore = defineStore("spend", {
           item.color = newCategory.color
         })
       }
+    },
+    changeAccountAndCurrency(
+      oldAccountName: string,
+      newAccount: { title: string; sum: number; currency: string }
+    ) {
+      //SAME WITH earn
+      const allSpends = this.spend.filter((item) => item.account === oldAccountName)
+      allSpends.forEach((item) => {
+        item.account = newAccount.title
+        item.currency = newAccount.currency
+      })
     }
   },
   getters: {

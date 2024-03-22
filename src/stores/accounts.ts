@@ -200,8 +200,6 @@ export const useAccountsStore = defineStore("accounts", {
         "-"
       )
 
-      console.log("this.accounts[indexCredit].sum,", this.accounts[indexCredit].sum)
-
       this.accounts[indexCredit].sum = performOperation(
         this.accounts[indexCredit].sum,
         creditAmount,

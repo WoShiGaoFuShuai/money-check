@@ -83,6 +83,12 @@ export const useEarnStore = defineStore("earn", {
       this.earn.splice(index, 1)
     },
 
+    deleteAllEarnsOfAccount(accName: string) {
+      console.log(this.earn.filter((item) => item.account !== accName))
+
+      this.earn = this.earn.filter((item) => item.account !== accName)
+    },
+
     changeCategory(newCategory: NewCategory, nameToUpdate: string) {
       const arraysToUpdate = this.earn.filter((item) => item.categoryName === nameToUpdate)
 
@@ -93,6 +99,17 @@ export const useEarnStore = defineStore("earn", {
           item.color = newCategory.color
         })
       }
+    },
+
+    changeAccountAndCurrency(
+      oldAccountName: string,
+      newAccount: { title: string; sum: number; currency: string }
+    ) {
+      const allEarns = this.earn.filter((item) => item.account === oldAccountName)
+      allEarns.forEach((item) => {
+        item.account = newAccount.title
+        item.currency = newAccount.currency
+      })
     }
   },
   getters: {

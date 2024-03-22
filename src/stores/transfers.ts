@@ -95,6 +95,43 @@ export const useTransfersStore = defineStore("transfers", {
     },
     clearEditTransfer() {
       this.editTransfer = []
+    },
+    changeAccountAndCurrency(
+      oldAccountName: string,
+      newAccount: { title: string; sum: number; currency: string }
+    ) {
+      function isTransferData(transfer: TransferType): transfer is TransferData {
+        return "currency" in transfer
+      }
+
+      const allTransfers = this.transfers.filter(
+        (item) => item.debitTitle === oldAccountName || item.creditTitle === oldAccountName
+      )
+      allTransfers.forEach((item) => {
+        //if true => transfer is with same currency, if false => with different currencies
+        if (isTransferData(item)) {
+          // item with same currency
+          if (item.debitTitle === oldAccountName) {
+            item.debitTitle = newAccount.title
+          }
+
+          if (item.creditTitle === oldAccountName) {
+            item.creditTitle = newAccount.title
+          }
+          item.currency = newAccount.currency
+        } else {
+          // item with different currencies
+          if (item.debitTitle === oldAccountName) {
+            item.debitTitle = newAccount.title
+            item.currencyDebit = newAccount.currency
+          }
+
+          if (item.creditTitle === oldAccountName) {
+            item.creditTitle = newAccount.title
+            item.currencyCredit = newAccount.currency
+          }
+        }
+      })
     }
   },
   getters: {

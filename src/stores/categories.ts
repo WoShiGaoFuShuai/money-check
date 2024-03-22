@@ -14,7 +14,6 @@ export interface CategoryObject {
 export const useCategoriesStore = defineStore("categories", {
   state: () => ({
     categoriesExpenses: reactive([
-      { iconName: "fa-solid fa-list", categoryName: "All Categories", color: "#606c38" },
       { iconName: "fa-solid fa-basket-shopping", categoryName: "Food", color: "#fefae0" },
       { iconName: "fa-solid fa-shirt", categoryName: "Clothes", color: "#ffb703" },
       { iconName: "fa-solid fa-dumbbell", categoryName: "Sport", color: "#c1121f" },
@@ -24,7 +23,6 @@ export const useCategoriesStore = defineStore("categories", {
       { iconName: "fa-solid fa-mug-saucer", categoryName: "Eating Outside", color: "#588157" }
     ] as CategoryObject[]),
     categoriesIncome: reactive([
-      { iconName: "fa-solid fa-list", categoryName: "All Categories", color: "#588157" },
       { iconName: "fa-solid fa-piggy-bank", categoryName: "Dividends", color: "#669bbc" },
       { iconName: "fa-solid fa-sack-dollar", categoryName: "Salary", color: "#ffb703" },
       { iconName: "fa-solid fa-briefcase", categoryName: "Business", color: "#c1121f" },

@@ -1,9 +1,6 @@
 <template>
   <div class="newAccount__wrapper">
-    <TopNavbar
-      :title="'New Account'"
-      :right-icons="[{ icon: 'fa solid fa-pencil' }, { icon: 'fa solid fa-plus' }]"
-    />
+    <TopNavbar :title="'New Account'" />
 
     <NewAccountForm
       :currencies="accountsStore.currencies"

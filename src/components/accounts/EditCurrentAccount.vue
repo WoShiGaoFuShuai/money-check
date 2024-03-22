@@ -57,12 +57,7 @@
         </div>
       </div>
 
-      <div
-        class="error"
-        role="error"
-      >
-        Please fill out all inputs
-      </div>
+      <AppError :error="error" />
 
       <div class="newAccount__button-wrapper">
         <font-awesome-icon
@@ -97,8 +92,12 @@
 import TopNavbar from "@/components/navigation/TopNavbar.vue"
 import NewAccountsCurrencySelect from "@/components/accounts/NewAccountsCurrencySelect.vue"
 import { useAccountsStore } from "@/stores/accounts"
+import { useSpendStore } from "@/stores/spend"
+import { useEarnStore } from "@/stores/earn"
+import { useTransfersStore } from "@/stores/transfers"
 import type { AccountToEdit } from "@/views/AccountsView.vue"
-import { ref, onMounted } from "vue"
+import AppError from "@/components/shared/AppError.vue"
+import { ref, onMounted, watch } from "vue"
 
 const emit = defineEmits(["hideEditCurrentAccount"])
 const props = defineProps({
@@ -109,13 +108,31 @@ const props = defineProps({
 })
 
 const accountsStore = useAccountsStore()
+const spendStore = useSpendStore()
+const earnStore = useEarnStore()
+const transfersStore = useTransfersStore()
 
 const accountNameInput = ref("")
-const accountBalanceInput = ref(0)
+const accountBalanceInput = ref<number>(0)
 const receivedCurrencySymbol = ref("")
 
 //edit account
 const editAccount = () => {
+  error.value = ""
+  if (accountNameInput.value.trim() === "" || accountBalanceInput.value === null) {
+    error.value = "Inputs can not be empty"
+    return
+  }
+
+  if (
+    accountNameInput.value.trim() === props.accountToEdit.title.trim() &&
+    receivedCurrencySymbol.value === props.accountToEdit.symbol &&
+    accountBalanceInput.value === props.accountToEdit.sum
+  ) {
+    error.value = "New account's information is the same with current account"
+    return
+  }
+
   const index = props.accountToEdit.index
   const editAccount = {
     title: accountNameInput.value,
@@ -124,8 +141,12 @@ const editAccount = () => {
   }
 
   accountsStore.editAccount(editAccount, index)
+  spendStore.changeAccountAndCurrency(props.accountToEdit.title, editAccount)
+  earnStore.changeAccountAndCurrency(props.accountToEdit.title, editAccount)
+  transfersStore.changeAccountAndCurrency(props.accountToEdit.title, editAccount)
 
   emit("hideEditCurrentAccount")
+  error.value = ""
 }
 
 const cancelEditingAccount = () => {
@@ -143,9 +164,19 @@ const receiveSelectedItem = (currencySymbol: string) => {
   receivedCurrencySymbol.value = currencySymbol
 }
 
+const error = ref<string>("")
+
 onMounted(() => {
   accountNameInput.value = props.accountToEdit.title
   accountBalanceInput.value = props.accountToEdit.sum
+})
+
+watch(accountBalanceInput, (newValue) => {
+  const valueAsString = String(newValue)
+
+  if (valueAsString === "" || newValue === null || isNaN(newValue)) {
+    accountBalanceInput.value = 0
+  }
 })
 </script>
 <style lang="css" scoped>
@@ -228,10 +259,5 @@ onMounted(() => {
 
 .btn__primary:first-child {
   margin-right: 16px;
-}
-
-.error {
-  display: none;
-  margin-top: 8px;
 }
 </style>

@@ -55,7 +55,6 @@ const props = defineProps({
 
 const handler = (category: CategoryObject) => {
   if (props.editMode) {
-    console.log("HANDLER")
     emit("pushToEditWindow", category)
     return
   }

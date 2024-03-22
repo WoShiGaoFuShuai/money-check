@@ -16,6 +16,7 @@
     <DatePicker
       v-model.number="date"
       mode="date"
+      :max-date="today"
     />
   </div>
 </template>
@@ -41,10 +42,25 @@ const props = defineProps({
 })
 
 const date = ref(props.editItem?.timestamp)
+const today = new Date().toISOString().slice(0, 10)
 
 const editDateConfirm = () => {
-  emit("editDateConfirm", date.value)
-  closeEditDateCalendar()
+  if (typeof date.value === "number") {
+    // Convert date.value to a Date object
+    const chosenDate = new Date(date.value)
+    const currentDate = new Date()
+
+    //add to choosen day current time hours/mins/secs/mills
+    chosenDate.setHours(
+      currentDate.getHours(),
+      currentDate.getMinutes(),
+      currentDate.getSeconds(),
+      currentDate.getMilliseconds()
+    )
+
+    emit("editDateConfirm", chosenDate.getTime())
+    closeEditDateCalendar()
+  }
 }
 
 const closeEditDateCalendar = () => {

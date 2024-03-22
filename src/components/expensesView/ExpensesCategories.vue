@@ -44,8 +44,8 @@ const calculatorStore = useCalculatorStore()
 
 const activeCategories =
   props.mode === Mode.EXPENSES
-    ? categoriesStore.categoriesExpenses
-    : categoriesStore.categoriesIncome
+    ? categoriesStore.getterCategoriesExpensesWithoutAllCategories
+    : categoriesStore.getterCategoriesIncomeWithoutAllCategories
 
 const router = useRouter()
 

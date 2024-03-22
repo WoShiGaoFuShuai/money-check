@@ -19,7 +19,7 @@ import TopNavbar from "@/components/navigation/TopNavbar.vue"
 import CategoryItems from "@/components/category/CategoryItems.vue"
 import { useCategoriesStore, type CategoryObject } from "@/stores/categories"
 
-const emit = defineEmits(["toggleEditCategoriesList", "chooseCategoryName"])
+const emit = defineEmits(["toggleEditCategoriesList", "chooseCategory"])
 const categoriesStore = useCategoriesStore()
 
 const closeEditCategoriesList = () => {
@@ -27,7 +27,7 @@ const closeEditCategoriesList = () => {
 }
 
 const handleChooseCategoryName = (category: CategoryObject) => {
-  emit("chooseCategoryName", category.categoryName)
+  emit("chooseCategory", category)
 }
 </script>
 <style lang="css" scoped></style>

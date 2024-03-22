@@ -26,6 +26,7 @@ import { useRoute } from "vue-router"
 import { useSpendStore } from "@/stores/spend"
 import { useEarnStore } from "@/stores/earn"
 import { type SpendCardInfo } from "@/stores/accounts"
+import type { CategoryObject } from "@/stores/categories"
 
 const spendStore = useSpendStore()
 const earnStore = useEarnStore()
@@ -74,9 +75,11 @@ const changeAmount = (newAmount: number) => {
   }
 }
 
-const changeCategory = (newCategory: string) => {
+const changeCategory = (category: CategoryObject) => {
   if (editItem.value) {
-    editItem.value.categoryName = newCategory
+    editItem.value.categoryName = category.categoryName
+    editItem.value.iconName = category.iconName
+    editItem.value.color = category.color
   }
 }
 
